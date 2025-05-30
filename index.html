@@ -16,7 +16,7 @@
     .card img { max-width: 100%; height: auto; }
     .card h2 { margin: 0.5rem 0; font-size: 1.1rem; }
     .card p { margin: 0.3rem 0; font-size: 0.9rem; }
-    .card button { background: #EE3124; color: #fff; border: none; padding: 0.5rem; cursor: pointer; border-radius: 4px; }
+    .card button { background: #EE3124; color: #fff; border: none; padding: 0.5rem; cursor: pointer; border-radius: 4px; margin-top: 0.5rem; }
     #pricingSection { border-top: 2px solid #EE3124; padding-top: 1rem; }
     #pricingTable { width: 100%; border-collapse: collapse; margin-top: 0.5rem; }
     #pricingTable th, #pricingTable td { border: 1px solid #ccc; padding: 0.5rem; text-align: center; }
@@ -86,17 +86,17 @@
 
   <script>
     // Data definitions
-    const stateGroups = { /* ...same as before...*/
+    const stateGroups = {
       "Group A": ["AL","AZ","CA","CO","CT","FL","GA","IL","IN","MA","MD","MI","MN","MO","LA","NJ","NV","NY","OH","OR","PA","TN","TX","VA","WA","WI"],
       "Group C": ["AK","ND","NM","SD","MT","WY"],
       "Group D": ["AR","DE","HI","IA","ID","KS","KY","ME","MS","NC","NE","NH","OK","RI","UT","VT","WV"]
     };
-    const tierMapping = { /* same tiers */
+    const tierMapping = {
       "Group A": ["State Essential","State Enhanced","State Professional","Premiere"],
       "Group C": ["State Essential","State Enhanced","State Professional","Premiere"],
       "Group D": ["State Essential","State Enhanced","State Professional","Premiere"]
     };
-    const featuresByTier = { /* same features without price */
+    const featuresByTier = {
       "State Essential": { features: "State Briefs; Pleadings & Motions; State Jury Instructions", logo: "LexisPlus.png" },
       "State Enhanced": { features: "All Essential + Federal Cases; Federal Legislative Materials; Templates; Practical Guidance", logo: "LexisPlus.png" },
       "State Professional": { features: "All Enhanced + Analytics; News; Verdicts & Settlements; CourtLink", logo: "LexisPlus.png" },
@@ -104,10 +104,10 @@
     };
 
     // DOM refs
-    const sgSelect   = document.getElementById('stateGroup');
-    const tableSelect= document.getElementById('tableSelect');
-    const promoInput = document.getElementById('promoPrice');
-    const pricingBody= document.querySelector('#pricingTable tbody');
+    const sgSelect    = document.getElementById('stateGroup');
+    const tableSelect = document.getElementById('tableSelect');
+    const promoInput  = document.getElementById('promoPrice');
+    const pricingBody = document.querySelector('#pricingTable tbody');
     const slots = [1,2,3,4].map(i => ({
       plat: document.getElementById('platform'+i),
       tier: document.getElementById('tier'+i),
@@ -150,48 +150,3 @@
             <h2>${s.plat.value} - ${s.tier.value}</h2>
             <p><strong>Price:</strong> ${s.price.value || '---'} / attorney/mo</p>
             <p><strong>Features:</strong> ${data.features}</p>
-            <button data-slot="${i+1}">Show Pricing Table</button>
-          `;
-          cardsContainer.appendChild(card);
-        }
-      });
-    }
-
-    // Pricing table options
-    function updateTableOptions() {
-      tableSelect.innerHTML = '<option disabled selected>— Select a Plan —</option>';
-      slots.forEach((s,i) => {
-        if(s.plat.value && s.tier.value && s.price.value) {
-          const label = `Slot ${i+1}: ${s.plat.value} - ${s.tier.value}`;
-          tableSelect.add(new Option(label, i));
-        }
-      });
-      tableSelect.disabled = !tableSelect.options.length>1;
-      promoInput.disabled = tableSelect.disabled;
-    }
-
-    // Pricing table generation
-    tableSelect.addEventListener('change', () => {
-      const idx = parseInt(tableSelect.value);
-      const s = slots[idx];
-      const base = parseFloat(s.price.value.replace(/[^0-9.]/g, ''));
-      const promo = promoInput.value;
-      // calculate
-      const year1 = base * 12;
-      const year2 = year1 * 1.03;
-      const year3 = year2 * 1.03;
-      pricingBody.innerHTML = `
-        <tr><td>Promotional Period</td><td>${promo || '---'}</td></tr>
-        <tr><td>Year 1</td><td>$${year1.toFixed(2)}</td></tr>
-        <tr><td>Year 2</td><td>$${year2.toFixed(2)}</td></tr>
-        <tr><td>Year 3</td><td>$${year3.toFixed(2)}</td></tr>
-      `;
-    });
-
-    // Promo input enables upon selection
-    promoInput.addEventListener('input', () => {
-      if(tableSelect.value !== undefined) tableSelect.dispatchEvent(new Event('change'));
-    });
-  </script>
-</body>
-</html>
