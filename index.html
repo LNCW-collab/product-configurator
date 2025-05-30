@@ -10,12 +10,16 @@
     .controls { display: flex; flex-wrap: wrap; gap: 1rem; margin-bottom: 1rem; }
     label { display: block; margin-top: 0.5rem; font-weight: bold; }
     select, input[type="text"] { width: 100%; padding: 0.4rem; font-size: 0.95rem; margin-top: 0.25rem; }
-    .slot { flex: 1 1 220px; }
-    .cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; }
-    .card { border: 2px solid #EE3124; border-radius: 8px; padding: 1rem; }
+    .slot { flex: 1 1 220px; border: 1px solid #ccc; border-radius: 6px; padding: 0.5rem; }
+    .cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
+    .card { border: 2px solid #EE3124; border-radius: 8px; padding: 1rem; position: relative; }
     .card img { max-width: 100%; height: auto; }
     .card h2 { margin: 0.5rem 0; font-size: 1.1rem; }
     .card p { margin: 0.3rem 0; font-size: 0.9rem; }
+    .card button { background: #EE3124; color: #fff; border: none; padding: 0.5rem; cursor: pointer; border-radius: 4px; }
+    #pricingSection { border-top: 2px solid #EE3124; padding-top: 1rem; }
+    #pricingTable { width: 100%; border-collapse: collapse; margin-top: 0.5rem; }
+    #pricingTable th, #pricingTable td { border: 1px solid #ccc; padding: 0.5rem; text-align: center; }
   </style>
 </head>
 <body>
@@ -33,7 +37,7 @@
       <select id="platform1" disabled><option disabled selected>— Select Platform —</option><option>Lexis+</option><option>Lexis+ AI</option></select>
       <label>Category</label>
       <select id="tier1" disabled><option disabled selected>— Select Category —</option></select>
-      <label>Custom Price</label>
+      <label>Price per month per attorney</label>
       <input type="text" id="price1" placeholder="$0.00" disabled>
     </div>
     <div class="slot" id="slot2">
@@ -41,7 +45,7 @@
       <select id="platform2" disabled><option disabled selected>— Select Platform —</option><option>Lexis+</option><option>Lexis+ AI</option></select>
       <label>Category</label>
       <select id="tier2" disabled><option disabled selected>— Select Category —</option></select>
-      <label>Custom Price</label>
+      <label>Price per month per attorney</label>
       <input type="text" id="price2" placeholder="$0.00" disabled>
     </div>
     <div class="slot" id="slot3">
@@ -49,7 +53,7 @@
       <select id="platform3" disabled><option disabled selected>— Select Platform —</option><option>Lexis+</option><option>Lexis+ AI</option></select>
       <label>Category</label>
       <select id="tier3" disabled><option disabled selected>— Select Category —</option></select>
-      <label>Custom Price</label>
+      <label>Price per month per attorney</label>
       <input type="text" id="price3" placeholder="$0.00" disabled>
     </div>
     <div class="slot" id="slot4">
@@ -57,7 +61,7 @@
       <select id="platform4" disabled><option disabled selected>— Select Platform —</option><option>Lexis+</option><option>Lexis+ AI</option></select>
       <label>Category</label>
       <select id="tier4" disabled><option disabled selected>— Select Category —</option></select>
-      <label>Custom Price</label>
+      <label>Price per month per attorney</label>
       <input type="text" id="price4" placeholder="$0.00" disabled>
     </div>
   </div>
@@ -66,89 +70,128 @@
     <!-- Cards will be injected here -->
   </div>
 
+  <div id="pricingSection">
+    <h2>Pricing Table</h2>
+    <label for="promoPrice">Promotional Period Price</label>
+    <input type="text" id="promoPrice" placeholder="$0.00" disabled>
+    <label for="tableSelect">Select Plan</label>
+    <select id="tableSelect" disabled><option disabled selected>— Select a Plan —</option></select>
+    <table id="pricingTable">
+      <thead>
+        <tr><th>Period</th><th>Total Price</th></tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
   <script>
-    // State groups and tiers
-    const stateGroups = {
+    // Data definitions
+    const stateGroups = { /* ...same as before...*/
       "Group A": ["AL","AZ","CA","CO","CT","FL","GA","IL","IN","MA","MD","MI","MN","MO","LA","NJ","NV","NY","OH","OR","PA","TN","TX","VA","WA","WI"],
       "Group C": ["AK","ND","NM","SD","MT","WY"],
       "Group D": ["AR","DE","HI","IA","ID","KS","KY","ME","MS","NC","NE","NH","OK","RI","UT","VT","WV"]
     };
-    const tierMapping = {
+    const tierMapping = { /* same tiers */
       "Group A": ["State Essential","State Enhanced","State Professional","Premiere"],
       "Group C": ["State Essential","State Enhanced","State Professional","Premiere"],
       "Group D": ["State Essential","State Enhanced","State Professional","Premiere"]
     };
-    const featuresByTier = {
+    const featuresByTier = { /* same features without price */
       "State Essential": { features: "State Briefs; Pleadings & Motions; State Jury Instructions", logo: "LexisPlus.png" },
       "State Enhanced": { features: "All Essential + Federal Cases; Federal Legislative Materials; Templates; Practical Guidance", logo: "LexisPlus.png" },
       "State Professional": { features: "All Enhanced + Analytics; News; Verdicts & Settlements; CourtLink", logo: "LexisPlus.png" },
       "Premiere": { features: "All Professional + AI Summaries; Advanced Research Tools", logo: "LexisPlus.png" }
     };
 
-    // DOM references
-    const sgSelect = document.getElementById('stateGroup');
+    // DOM refs
+    const sgSelect   = document.getElementById('stateGroup');
+    const tableSelect= document.getElementById('tableSelect');
+    const promoInput = document.getElementById('promoPrice');
+    const pricingBody= document.querySelector('#pricingTable tbody');
     const slots = [1,2,3,4].map(i => ({
       plat: document.getElementById('platform'+i),
       tier: document.getElementById('tier'+i),
-      priceInput: document.getElementById('price'+i)
+      price: document.getElementById('price'+i)
     }));
     const cardsContainer = document.getElementById('cards');
 
-    // Initialize state group dropdown
-    Object.keys(stateGroups).forEach(g => { let o = new Option(g,g); sgSelect.add(o); });
-
-    // On state group selection, enable all platform selects
+    // Init state groups
+    Object.keys(stateGroups).forEach(g => sgSelect.add(new Option(g, g)));
     sgSelect.addEventListener('change', () => {
-      slots.forEach(s => { 
-        s.plat.disabled = false; 
-        s.tier.disabled = true; 
-        s.priceInput.disabled = true;
-        s.plat.selectedIndex = 0; 
-        s.tier.innerHTML = '<option disabled selected>— Select Category —</option>';
-        s.priceInput.value = '';
-      });
+      slots.forEach(s => { s.plat.disabled=false; s.tier.disabled=true; s.price.disabled=true; s.plat.selectedIndex=0; s.tier.innerHTML='<option disabled selected>— Select Category —</option>'; s.price.value=''; });
       cardsContainer.innerHTML = '';
+      tableSelect.disabled = true; tableSelect.innerHTML='<option disabled selected>— Select a Plan —</option>';
+      promoInput.disabled = true; promoInput.value = '';
     });
 
-    // Wire platform -> tier and enable price entry
-    slots.forEach(s => {
+    // Slot logic
+    slots.forEach((s, idx) => {
       s.plat.addEventListener('change', () => {
-        const group = sgSelect.value;
-        const allowed = tierMapping[group] || [];
+        const allowed = tierMapping[sgSelect.value] || [];
         s.tier.innerHTML = '<option disabled selected>— Select Category —</option>';
         allowed.forEach(t => s.tier.add(new Option(t,t)));
-        s.tier.disabled = false;
-        s.priceInput.disabled = true;
-        updateCards();
+        s.tier.disabled = false; s.price.disabled = true;
+        updateCards(); updateTableOptions();
       });
-      // On tier change, enable price input
-      s.tier.addEventListener('change', () => {
-        s.priceInput.disabled = false;
-        updateCards();
-      });
-      // On price input change, update cards
-      s.priceInput.addEventListener('input', updateCards);
+      s.tier.addEventListener('change', () => { s.price.disabled = false; updateCards(); updateTableOptions(); });
+      s.price.addEventListener('input', () => { updateCards(); updateTableOptions(); });
     });
 
+    // Generate cards
     function updateCards() {
       cardsContainer.innerHTML = '';
       slots.forEach((s,i) => {
-        const p = s.plat.value;
-        const t = s.tier.value;
-        const customPrice = s.priceInput.value;
-        if (p && t) {
-          const data = featuresByTier[t];
-          const card = document.createElement('div'); card.className = 'card';
+        if(s.plat.value && s.tier.value) {
+          const data = featuresByTier[s.tier.value];
+          const card = document.createElement('div'); card.className='card';
+          card.dataset.slot = i+1;
           card.innerHTML = `
             <img src="${data.logo}" alt="Logo">
-            <h2>${p} - ${t}</h2>
-            <p><strong>Price:</strong> ${customPrice || '---'}</p>
+            <h2>${s.plat.value} - ${s.tier.value}</h2>
+            <p><strong>Price:</strong> ${s.price.value || '---'} / attorney/mo</p>
             <p><strong>Features:</strong> ${data.features}</p>
+            <button data-slot="${i+1}">Show Pricing Table</button>
           `;
           cardsContainer.appendChild(card);
         }
       });
     }
+
+    // Pricing table options
+    function updateTableOptions() {
+      tableSelect.innerHTML = '<option disabled selected>— Select a Plan —</option>';
+      slots.forEach((s,i) => {
+        if(s.plat.value && s.tier.value && s.price.value) {
+          const label = `Slot ${i+1}: ${s.plat.value} - ${s.tier.value}`;
+          tableSelect.add(new Option(label, i));
+        }
+      });
+      tableSelect.disabled = !tableSelect.options.length>1;
+      promoInput.disabled = tableSelect.disabled;
+    }
+
+    // Pricing table generation
+    tableSelect.addEventListener('change', () => {
+      const idx = parseInt(tableSelect.value);
+      const s = slots[idx];
+      const base = parseFloat(s.price.value.replace(/[^0-9.]/g, ''));
+      const promo = promoInput.value;
+      // calculate
+      const year1 = base * 12;
+      const year2 = year1 * 1.03;
+      const year3 = year2 * 1.03;
+      pricingBody.innerHTML = `
+        <tr><td>Promotional Period</td><td>${promo || '---'}</td></tr>
+        <tr><td>Year 1</td><td>$${year1.toFixed(2)}</td></tr>
+        <tr><td>Year 2</td><td>$${year2.toFixed(2)}</td></tr>
+        <tr><td>Year 3</td><td>$${year3.toFixed(2)}</td></tr>
+      `;
+    });
+
+    // Promo input enables upon selection
+    promoInput.addEventListener('input', () => {
+      if(tableSelect.value !== undefined) tableSelect.dispatchEvent(new Event('change'));
+    });
   </script>
 </body>
 </html>
