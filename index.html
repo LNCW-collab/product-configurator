@@ -13,16 +13,22 @@
     .slots { display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 1rem; }
     .slot { flex: 1 1 220px; border: 1px solid #ccc; border-radius: 6px; padding: 0.5rem; }
     .cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; margin: 2rem 0; }
-    .card { border: 2px solid #EE3124; border-radius: 8px; padding: 1rem; position: relative; cursor: pointer; transition: transform 0.2s; }
+    .card { border: 2px solid #EE3124; border-radius: 8px; padding: 1rem; position: relative; cursor: default; transition: transform 0.2s; }
     .card.selected { border-color: #0052CC; box-shadow: 0 0 8px rgba(0,82,204,0.5); transform: scale(1.02); }
     .card img { max-width: 100%; height: auto; }
     .card h2 { margin: 0.5rem 0; font-size: 1.1rem; }
     .card p { margin: 0.3rem 0; font-size: 0.9rem; }
-    .card button { display: block; background: #EE3124; color: #fff; border: none; padding: 0.5rem; cursor: pointer; border-radius: 4px; margin-top: 0.5rem; }
+    .card button { background: #EE3124; color: #fff; border: none; padding: 0.5rem; cursor: pointer; border-radius: 4px; margin: 0.5rem 0 0.25rem; width: 100%; }
     #pricingSection { border-top: 2px solid #EE3124; padding-top: 1rem; display: none; }
     #pricingTable { width: 100%; border-collapse: collapse; margin-top: 0.5rem; }
     #pricingTable th, #pricingTable td { border: 1px solid #ccc; padding: 0.5rem; text-align: center; }
     #promoPrice { width: 120px; }
+    /* Modal */
+    #featureModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; }
+    #featureModal .modal-content { background: #fff; padding: 1.5rem; border-radius: 8px; max-width: 500px; width: 90%; box-shadow: 0 2px 10px rgba(0,0,0,0.3); }
+    #featureModal h3 { margin-top: 0; }
+    #featureModal ul { padding-left: 1.2rem; }
+    #featureModal button.close { background: #ccc; margin-top: 1rem; }
   </style>
 </head>
 <body>
@@ -51,11 +57,65 @@
     </table>
   </div>
 
+  <!-- Feature Modal -->
+  <div id="featureModal">
+    <div class="modal-content">
+      <h3>Plan Features</h3>
+      <ul id="featureList"></ul>
+      <button class="close">Close</button>
+    </div>
+  </div>
+
   <script>
-    // Data definitions (omitting arrays for brevity)
+    // Data definitions
     const stateGroups = {"Group A":[],"Group C":[],"Group D":[]};
     const tierMapping = {"Group A":["State Essential","State Enhanced","State Professional","Premiere"],"Group C":["State Essential","State Enhanced","State Professional","Premiere"],"Group D":["State Essential","State Enhanced","State Professional","Premiere"]};
-    const featuresByTier = {"State Essential":{features:"State Briefs; Pleadings & Motions; State Jury Instructions",logo:"LexisPlus.png"},"State Enhanced":{features:"All Essential + Federal Cases; Federal Legislative Materials; Templates; Practical Guidance",logo:"LexisPlus.png"},"State Professional":{features:"All Enhanced + Analytics; News; Verdicts & Settlements; CourtLink",logo:"LexisPlus.png"},"Premiere":{features:"All Professional + AI Summaries; Advanced Research Tools",logo:"LexisPlus.png"}};
+    // Full feature lists per tier
+    const featuresByTier = {
+      // Based on PDF Master-A, Master-C, Master-D mapping
+      "State Essential": {
+        features: [
+          "State Cases: broad state-specific case law",
+          "State Statutes and Legislation: real-time jurisdiction updates",
+          "State Briefs, Pleadings & Motions",
+          "Verdicts and Settlements: largest collection",
+          "State Jury Instructions",
+          "Shepard’s Citations Service"
+        ],
+        logo: "LexisPlus.png"
+      },
+      "State Enhanced": {
+        features: [
+          "All State Essential features",
+          "State Agency and Administrative Materials",
+          "Federal Cases: widest federal case law",
+          "Federal Legislative Materials: congressional acts & bills",
+          "Automated Templates: State Automated Templates",
+          "Matthew Bender: State edition",
+          "Practical Guidance: All Forms & Practical Guidance"
+        ],
+        logo: "LexisPlus.png"
+      },
+      "State Professional": {
+        features: [
+          "All State Enhanced features",
+          "Federal Agency & Administrative Materials",
+          "CourtLink: court dockets & documents",
+          "News: Law360 daily coverage",
+          "Verdicts and Settlements",
+          "Jury Instructions: All Jury Instructions"
+        ],
+        logo: "LexisPlus.png"
+      },
+      "Premiere": {
+        features: [
+          "All State Professional features",
+          "AI Summaries: advanced AI insights",
+          "Advanced Research Tools"
+        ],
+        logo: "LexisPlus.png"
+      }
+    };
 
     // DOM refs
     const sgSelect = document.getElementById('stateGroup');
@@ -65,10 +125,13 @@
     const promoInput = document.getElementById('promoPrice');
     const pricingSection = document.getElementById('pricingSection');
     const pricingBody = document.querySelector('#pricingTable tbody');
+    const featureModal = document.getElementById('featureModal');
+    const featureList = document.getElementById('featureList');
+    const closeModalBtn = featureModal.querySelector('.close');
 
     let currentPlanIdx = null;
 
-    // Initialize state group dropdown
+    // Initialize State Group dropdown
     Object.keys(stateGroups).forEach(g => sgSelect.add(new Option(g, g)));
     sgSelect.addEventListener('change', () => {
       numSelect.disabled = false;
@@ -77,7 +140,7 @@
       resetPricing();
     });
 
-    // Render slots based on number of plans
+    // Render plan slots
     numSelect.addEventListener('change', () => {
       const n = +numSelect.value;
       slotsContainer.innerHTML = '';
@@ -109,7 +172,7 @@
         plat: div.querySelector('select[id^=platform]'),
         tier: div.querySelector('select[id^=tier]'),
         price: div.querySelector('input[id^=price]'),
-        index: [...slotsContainer.children].indexOf(div)
+        idx: [...slotsContainer.children].indexOf(div)
       }));
 
       slots.forEach(s => {
@@ -129,6 +192,8 @@
 
     function updateCards() {
       cardsContainer.innerHTML = '';
+      currentPlanIdx = null;
+      resetPricing();
       const slots = [...slotsContainer.children];
       slots.forEach((div, i) => {
         const plat = div.querySelector('select[id^=platform]').value;
@@ -143,23 +208,29 @@
             <img src="${data.logo}" alt="Logo">
             <h2>${plat} - ${tier}</h2>
             <p><strong>Price:</strong> $${price} / attorney/mo</p>
-            <p><strong>Features:</strong> ${data.features}</p>
-            <button data-slot="${i}">Show Pricing Table</button>
+            <p><strong>Features:</strong> ${data.features.join('; ')}</p>
+            <button data-slot="${i}" class="pricing-btn">Show Pricing Table</button>
+            <button data-slot="${i}" class="details-btn">View Full Features</button>
           `;
           cardsContainer.appendChild(card);
         }
       });
 
-      document.querySelectorAll('.card button').forEach(btn => {
-        btn.addEventListener('click', () => {
-          document.querySelectorAll('.card').forEach(c => c.classList.remove('selected'));
-          const card = btn.closest('.card');
-          card.classList.add('selected');
-          currentPlanIdx = +btn.dataset.slot;
-          promoInput.disabled = false;
-          generateTable();
-        });
-      });
+      document.querySelectorAll('.pricing-btn').forEach(btn => btn.addEventListener('click', () => {
+        document.querySelectorAll('.card').forEach(c => c.classList.remove('selected'));
+        const card = btn.closest('.card');
+        card.classList.add('selected');
+        currentPlanIdx = +btn.dataset.slot;
+        promoInput.disabled = false;
+        generateTable();
+      }));
+
+      document.querySelectorAll('.details-btn').forEach(btn => btn.addEventListener('click', () => {
+        const idx = +btn.dataset.slot;
+        const div = slotsContainer.children[idx];
+        const tier = div.querySelector('select[id^=tier]').value;
+        showModal(featuresByTier[tier].features);
+      }));
     }
 
     function resetPricing() {
@@ -167,6 +238,7 @@
       promoInput.disabled = true;
       promoInput.value = '';
       pricingBody.innerHTML = '';
+      document.querySelectorAll('.card').forEach(c => c.classList.remove('selected'));
     }
 
     function generateTable() {
@@ -186,7 +258,22 @@
       pricingSection.style.display = 'block';
     }
 
+    // Modal functionality
+    function showModal(features) {
+      featureList.innerHTML = '';
+      features.forEach(f => {
+        const li = document.createElement('li'); li.textContent = f;
+        featureList.appendChild(li);
+      });
+      featureModal.style.display = 'flex';
+    }
+    closeModalBtn.addEventListener('click', () => featureModal.style.display = 'none');
+    window.addEventListener('click', e => {
+      if (e.target === featureModal) featureModal.style.display = 'none';
+    });
+
     promoInput.addEventListener('input', generateTable);
   </script>
 </body>
 </html>
+
