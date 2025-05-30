@@ -8,7 +8,7 @@
     body { font-family: Arial, sans-serif; max-width: 600px; margin: 2rem auto; }
     h1 { color: #EE3124; }
     label { display: block; margin-top: 1rem; font-weight: bold; }
-    select { width: 100%; padding: 0.5rem; font-size: 1rem; }
+    select { width: 100%; padding: 0.5rem; font-size: 1rem; margin-top: 0.5rem; }
     .card { border: 2px solid #EE3124; border-radius: 8px; padding: 1rem; margin-top: 2rem; }
     .card img { max-width: 100%; height: auto; }
     .card h2 { margin: 0.5rem 0; }
@@ -17,61 +17,103 @@
 </head>
 <body>
   <h1>Lexis+ Product Configurator</h1>
+
+  <label for="stateGroup">Client State Group</label>
+  <select id="stateGroup">
+    <option disabled selected>— Select a State Group —</option>
+  </select>
+
   <label for="platform">Platform</label>
-  <select id="platform">
+  <select id="platform" disabled>
+    <option disabled selected>— Select Platform —</option>
     <option>Lexis+</option>
     <option>Lexis+ AI</option>
   </select>
 
   <label for="tier">Category</label>
-  <select id="tier">
-    <option>State Essential</option>
-    <option>State Enhanced</option>
-    <option>State Professional</option>
-    <option>Premiere</option>
+  <select id="tier" disabled>
+    <option disabled selected>— Select Category —</option>
   </select>
 
-  <div id="output" class="card">
-    <img id="logo" src="LexisPlus.png" alt="Logo">
-    <h2 id="title">Lexis+ - State Essential</h2>
-    <p><strong>Price:</strong> $100</p>
-    <p id="features"><strong>Features:</strong> Basic search; Case law</p>
+  <div id="output" class="card" style="display:none;">
+    <img id="logo" src="" alt="Logo">
+    <h2 id="title"></h2>
+    <p><strong>Price:</strong> <span id="price"></span></p>
+    <p id="features"><strong>Features:</strong> </p>
   </div>
 
   <script>
-    const data = [
-      { platform: 'Lexis+', tier: 'State Essential', price: '$100', features: 'Basic search; Case law', logo: 'LexisPlus.png' },
-      { platform: 'Lexis+', tier: 'State Enhanced', price: '$150', features: 'Enhanced search; Case law; Statutes', logo: 'LexisPlus.png' },
-      { platform: 'Lexis+', tier: 'State Professional', price: '$200', features: 'All Enhanced + Analytics', logo: 'LexisPlus.png' },
-      { platform: 'Lexis+', tier: 'Premiere', price: '$250', features: 'All Professional + AI Summaries', logo: 'LexisPlus.png' },
-      { platform: 'Lexis+ AI', tier: 'State Essential', price: '$120', features: 'AI Assist Basic', logo: 'LexisPlusAi.png' },
-      { platform: 'Lexis+ AI', tier: 'State Enhanced', price: '$180', features: 'AI Enhanced Search; Summaries', logo: 'LexisPlusAi.png' },
-      { platform: 'Lexis+ AI', tier: 'State Professional', price: '$240', features: 'All Enhanced + Advanced AI', logo: 'LexisPlusAi.png' },
-      { platform: 'Lexis+ AI', tier: 'Premiere', price: '$300', features: 'Full AI Suite + Analytics', logo: 'LexisPlusAi.png' }
-    ];
+    // Define state groups and their states
+    const stateGroups = {
+      "Group A": ["AL","AZ","CA","CO","CT","FL","GA","IL","IN","MA","MD","MI","MN","MO","LA","NJ","NV","NY","OH","OR","PA","TN","TX","VA","WA","WI"],
+      "Group C": ["AK","ND","NM","SD","MT","WY"],
+      "Group D": ["AR","DE","HI","IA","ID","KS","KY","ME","MS","NC","NE","NH","OK","RI","UT","VT","WV"]
+    };
 
-    const pSelect = document.getElementById('platform');
-    const tSelect = document.getElementById('tier');
+    // Define available tiers per group (all for each group)
+    const tierMapping = {
+      "Group A": ["State Essential","State Enhanced","State Professional","Premiere"],
+      "Group C": ["State Essential","State Enhanced","State Professional","Premiere"],
+      "Group D": ["State Essential","State Enhanced","State Professional","Premiere"]
+    };
+
+    // Features and pricing per tier
+    const featuresByTier = {
+      "State Essential": { price: "$100/mo", features: "State Briefs; Pleadings & Motions; State Jury Instructions" , logo: "LexisPlus.png"},
+      "State Enhanced": { price: "$150/mo", features: "All Essential + Federal Cases; Federal Legislative Materials; Templates; Practical Guidance", logo: "LexisPlus.png" },
+      "State Professional": { price: "$200/mo", features: "All Enhanced + Analytics; News; Verdicts & Settlements; CourtLink", logo: "LexisPlus.png" },
+      "Premiere": { price: "$250/mo", features: "All Professional + AI Summaries; Advanced Research Tools", logo: "LexisPlus.png" }
+    };
+
+    // DOM elements
+    const sgSelect = document.getElementById('stateGroup');
+    const pSelect  = document.getElementById('platform');
+    const tSelect  = document.getElementById('tier');
+    const output   = document.getElementById('output');
     const logoImg  = document.getElementById('logo');
     const titleEl  = document.getElementById('title');
-    const priceEl  = document.querySelector('#output p strong + span, #output p:nth-child(3)') || document.createElement('span');
+    const priceEl  = document.getElementById('price');
     const featuresEl = document.getElementById('features');
 
-    function updateCard() {
-      const plat = pSelect.value;
+    // Initialize state group dropdown
+    Object.keys(stateGroups).forEach(group => {
+      const opt = document.createElement('option'); opt.value = group; opt.textContent = group;
+      sgSelect.appendChild(opt);
+    });
+
+    // On state group change, enable platform, reset others
+    sgSelect.addEventListener('change', () => {
+      pSelect.disabled = false;
+      tSelect.disabled = true;
+      output.style.display = 'none';
+      pSelect.selectedIndex = 0;
+      tSelect.innerHTML = '<option disabled selected>— Select Category —</option>';
+    });
+
+    // On platform change, enable tier dropdown
+    pSelect.addEventListener('change', () => {
+      const group = sgSelect.value;
+      const tiers = tierMapping[group] || [];
+      tSelect.innerHTML = '<option disabled selected>— Select Category —</option>';
+      tiers.forEach(t => {
+        const opt = document.createElement('option'); opt.value = t; opt.textContent = t;
+        tSelect.appendChild(opt);
+      });
+      tSelect.disabled = false;
+      output.style.display = 'none';
+    });
+
+    // On tier change, update card
+    tSelect.addEventListener('change', () => {
       const tier = tSelect.value;
-      const entry = data.find(d => d.platform === plat && d.tier === tier);
-      if (!entry) return;
-      logoImg.src = entry.logo;
-      titleEl.textContent = `${plat} - ${tier}`;
-      priceEl.parentNode.innerHTML = `<strong>Price:</strong> ${entry.price}`;
-      featuresEl.innerHTML = `<strong>Features:</strong> ${entry.features}`;
-    }
-
-    pSelect.addEventListener('change', updateCard);
-    tSelect.addEventListener('change', updateCard);
-
-    updateCard();
+      const data = featuresByTier[tier];
+      if (!data) return;
+      logoImg.src = data.logo;
+      titleEl.textContent = `${pSelect.value} - ${tier}`;
+      priceEl.textContent = data.price;
+      featuresEl.innerHTML = `<strong>Features:</strong> ${data.features}`;
+      output.style.display = 'block';
+    });
   </script>
 </body>
 </html>
