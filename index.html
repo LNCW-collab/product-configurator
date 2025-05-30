@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Product Configurator</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 600px; margin: 2rem auto; }
+    h1 { color: #EE3124; }
+    label { display: block; margin-top: 1rem; font-weight: bold; }
+    select { width: 100%; padding: 0.5rem; font-size: 1rem; }
+    .card { border: 2px solid #EE3124; border-radius: 8px; padding: 1rem; margin-top: 2rem; }
+    .card img { max-width: 100%; height: auto; }
+    .card h2 { margin: 0.5rem 0; }
+    .card p { margin: 0.25rem 0; }
+  </style>
+</head>
+<body>
+  <h1>Lexis+ Product Configurator</h1>
+  <label for="platform">Platform</label>
+  <select id="platform">
+    <option>Lexis+</option>
+    <option>Lexis+ AI</option>
+  </select>
+
+  <label for="tier">Category</label>
+  <select id="tier">
+    <option>State Essential</option>
+    <option>State Enhanced</option>
+    <option>State Professional</option>
+    <option>Premiere</option>
+  </select>
+
+  <div id="output" class="card">
+    <img id="logo" src="LexisPlus.png" alt="Logo">
+    <h2 id="title">Lexis+ - State Essential</h2>
+    <p><strong>Price:</strong> $100</p>
+    <p id="features"><strong>Features:</strong> Basic search; Case law</p>
+  </div>
+
+  <script>
+    const data = [
+      { platform: 'Lexis+', tier: 'State Essential', price: '$100', features: 'Basic search; Case law', logo: 'LexisPlus.png' },
+      { platform: 'Lexis+', tier: 'State Enhanced', price: '$150', features: 'Enhanced search; Case law; Statutes', logo: 'LexisPlus.png' },
+      { platform: 'Lexis+', tier: 'State Professional', price: '$200', features: 'All Enhanced + Analytics', logo: 'LexisPlus.png' },
+      { platform: 'Lexis+', tier: 'Premiere', price: '$250', features: 'All Professional + AI Summaries', logo: 'LexisPlus.png' },
+      { platform: 'Lexis+ AI', tier: 'State Essential', price: '$120', features: 'AI Assist Basic', logo: 'LexisPlusAi.png' },
+      { platform: 'Lexis+ AI', tier: 'State Enhanced', price: '$180', features: 'AI Enhanced Search; Summaries', logo: 'LexisPlusAi.png' },
+      { platform: 'Lexis+ AI', tier: 'State Professional', price: '$240', features: 'All Enhanced + Advanced AI', logo: 'LexisPlusAi.png' },
+      { platform: 'Lexis+ AI', tier: 'Premiere', price: '$300', features: 'Full AI Suite + Analytics', logo: 'LexisPlusAi.png' }
+    ];
+
+    const pSelect = document.getElementById('platform');
+    const tSelect = document.getElementById('tier');
+    const logoImg  = document.getElementById('logo');
+    const titleEl  = document.getElementById('title');
+    const priceEl  = document.querySelector('#output p strong + span, #output p:nth-child(3)') || document.createElement('span');
+    const featuresEl = document.getElementById('features');
+
+    function updateCard() {
+      const plat = pSelect.value;
+      const tier = tSelect.value;
+      const entry = data.find(d => d.platform === plat && d.tier === tier);
+      if (!entry) return;
+      logoImg.src = entry.logo;
+      titleEl.textContent = `${plat} - ${tier}`;
+      priceEl.parentNode.innerHTML = `<strong>Price:</strong> ${entry.price}`;
+      featuresEl.innerHTML = `<strong>Features:</strong> ${entry.features}`;
+    }
+
+    pSelect.addEventListener('change', updateCard);
+    tSelect.addEventListener('change', updateCard);
+
+    updateCard();
+  </script>
+</body>
+</html>
