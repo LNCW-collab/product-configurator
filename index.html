@@ -1,10 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-  <nav style="margin-bottom:1rem;">
-  <a href="groupA.html">Group A Plan Details</a> |
-  <a href="groupC.html">Group C Plan Details</a> |
-  <a href="groupD.html">Group D Plan Details</a>
-</nav>
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -37,6 +32,11 @@
   </style>
 </head>
 <body>
+  <nav style="margin-bottom:1rem;">
+    <a href="groupA.html">Group A Plan Details</a> |
+    <a href="groupC.html">Group C Plan Details</a> |
+    <a href="groupD.html">Group D Plan Details</a>
+  </nav>
   <h1>Lexis+ Product Configurator Comparison</h1>
 
   <div class="controls">
@@ -47,9 +47,7 @@
   </div>
 
   <div class="slots controls" id="slotsContainer"></div>
-
   <div class="cards-grid" id="cards"></div>
-
   <div id="pricingSection">
     <h2>Pricing Table</h2>
     <div class="controls">
@@ -72,57 +70,15 @@
   </div>
 
   <script>
-    // Data definitions
     const stateGroups = {"Group A":[],"Group C":[],"Group D":[]};
     const tierMapping = {"Group A":["State Essential","State Enhanced","State Professional","Premiere"],"Group C":["State Essential","State Enhanced","State Professional","Premiere"],"Group D":["State Essential","State Enhanced","State Professional","Premiere"]};
-    // Full feature lists per tier
     const featuresByTier = {
-      // Based on PDF Master-A, Master-C, Master-D mapping
-      "State Essential": {
-        features: [
-          "State Cases: broad state-specific case law",
-          "State Statutes and Legislation: real-time jurisdiction updates",
-          "State Briefs, Pleadings & Motions",
-          "Verdicts and Settlements: largest collection",
-          "State Jury Instructions",
-          "Shepard’s Citations Service"
-        ],
-        logo: "LexisPlus.png"
-      },
-      "State Enhanced": {
-        features: [
-          "All State Essential features",
-          "State Agency and Administrative Materials",
-          "Federal Cases: widest federal case law",
-          "Federal Legislative Materials: congressional acts & bills",
-          "Automated Templates: State Automated Templates",
-          "Matthew Bender: State edition",
-          "Practical Guidance: All Forms & Practical Guidance"
-        ],
-        logo: "LexisPlus.png"
-      },
-      "State Professional": {
-        features: [
-          "All State Enhanced features",
-          "Federal Agency & Administrative Materials",
-          "CourtLink: court dockets & documents",
-          "News: Law360 daily coverage",
-          "Verdicts and Settlements",
-          "Jury Instructions: All Jury Instructions"
-        ],
-        logo: "LexisPlus.png"
-      },
-      "Premiere": {
-        features: [
-          "All State Professional features",
-          "AI Summaries: advanced AI insights",
-          "Advanced Research Tools"
-        ],
-        logo: "LexisPlus.png"
-      }
+      "State Essential": { features: ["State Cases: broad state-specific case law","State Statutes and Legislation: real-time jurisdiction updates","State Briefs, Pleadings & Motions","Verdicts and Settlements: largest collection","State Jury Instructions","Shepard’s Citations Service"], logo: "LexisPlus.png" },
+      "State Enhanced": { features: ["All State Essential features","State Agency and Administrative Materials","Federal Cases: widest federal case law","Federal Legislative Materials: congressional acts & bills","Automated Templates: State Automated Templates","Matthew Bender: State edition","Practical Guidance: All Forms & Practical Guidance"], logo: "LexisPlus.png" },
+      "State Professional": { features: ["All State Enhanced features","Federal Agency & Administrative Materials","CourtLink: court dockets & documents","News: Law360 daily coverage","Verdicts and Settlements","Jury Instructions: All Jury Instructions"], logo: "LexisPlus.png" },
+      "Premiere": { features: ["All State Professional features","AI Summaries: advanced AI insights","Advanced Research Tools"], logo: "LexisPlus.png" }
     };
 
-    // DOM refs
     const sgSelect = document.getElementById('stateGroup');
     const numSelect = document.getElementById('numPlans');
     const slotsContainer = document.getElementById('slotsContainer');
@@ -133,32 +89,15 @@
     const featureModal = document.getElementById('featureModal');
     const featureList = document.getElementById('featureList');
     const closeModalBtn = featureModal.querySelector('.close');
-
     let currentPlanIdx = null;
 
-    // Initialize State Group dropdown
     Object.keys(stateGroups).forEach(g => sgSelect.add(new Option(g, g)));
-    sgSelect.addEventListener('change', () => {
-      numSelect.disabled = false;
-      numSelect.selectedIndex = 0;
-      cardsContainer.innerHTML = '';
-      resetPricing();
-    });
+    sgSelect.addEventListener('change', () => { numSelect.disabled = false; numSelect.selectedIndex = 0; cardsContainer.innerHTML = ''; resetPricing(); });
 
-    // Render plan slots
-    numSelect.addEventListener('change', () => {
-      const n = +numSelect.value;
-      slotsContainer.innerHTML = '';
-      for (let i = 1; i <= n; i++) renderSlot(i);
-      setupSlotLogic();
-      cardsContainer.innerHTML = '';
-      resetPricing();
-    });
+    numSelect.addEventListener('change', () => { const n = +numSelect.value; slotsContainer.innerHTML = ''; for (let i = 1; i <= n; i++) renderSlot(i); setupSlotLogic(); cardsContainer.innerHTML = ''; resetPricing(); });
 
     function renderSlot(i) {
-      const div = document.createElement('div');
-      div.className = 'slot';
-      div.id = 'slot' + i;
+      const div = document.createElement('div'); div.className = 'slot'; div.id = 'slot' + i;
       div.innerHTML = `
         <label>Platform</label>
         <select id="platform${i}"><option disabled selected>— Select —</option><option>Lexis+</option><option>Lexis+ AI</option></select>
@@ -171,34 +110,21 @@
     }
 
     function setupSlotLogic() {
-      currentPlanIdx = null;
-      resetPricing();
+      currentPlanIdx = null; resetPricing();
       const slots = [...slotsContainer.children].map(div => ({
-        plat: div.querySelector('select[id^=platform]'),
-        tier: div.querySelector('select[id^=tier]'),
-        price: div.querySelector('input[id^=price]'),
-        idx: [...slotsContainer.children].indexOf(div)
+        plat: div.querySelector('select[id^=platform]'), tier: div.querySelector('select[id^=tier]'), price: div.querySelector('input[id^=price]'), idx: [...slotsContainer.children].indexOf(div)
       }));
 
       slots.forEach(s => {
         s.plat.disabled = false;
-        s.plat.addEventListener('change', () => {
-          s.tier.disabled = false;
-          s.tier.innerHTML = '<option disabled selected>— Select —</option>';
-          tierMapping[sgSelect.value].forEach(t => s.tier.add(new Option(t, t)));
-          s.price.disabled = true;
-          updateCards();
-          resetPricing();
-        });
+        s.plat.addEventListener('change', () => { s.tier.disabled = false; s.tier.innerHTML = '<option disabled selected>— Select —</option>'; tierMapping[sgSelect.value].forEach(t => s.tier.add(new Option(t,t))); s.price.disabled = true; updateCards(); resetPricing(); });
         s.tier.addEventListener('change', () => { s.price.disabled = false; updateCards(); resetPricing(); });
         s.price.addEventListener('input', () => { updateCards(); resetPricing(); });
       });
     }
 
     function updateCards() {
-      cardsContainer.innerHTML = '';
-      currentPlanIdx = null;
-      resetPricing();
+      cardsContainer.innerHTML = ''; currentPlanIdx = null; resetPricing();
       const slots = [...slotsContainer.children];
       slots.forEach((div, i) => {
         const plat = div.querySelector('select[id^=platform]').value;
@@ -206,11 +132,11 @@
         const price = div.querySelector('input[id^=price]').value;
         if (plat && tier) {
           const data = featuresByTier[tier];
-          const card = document.createElement('div');
-          card.className = 'card';
-          card.dataset.slot = i;
+          // Determine correct logo
+          const logo = plat === 'Lexis+ AI' ? 'LexisPlusAi.png' : data.logo;
+          const card = document.createElement('div'); card.className = 'card'; card.dataset.slot = i;
           card.innerHTML = `
-            <img src="${data.logo}" alt="Logo">
+            <img src="${logo}" alt="Logo">
             <h2>${plat} - ${tier}</h2>
             <p><strong>Price:</strong> $${price} / attorney/mo</p>
             <p><strong>Features:</strong> ${data.features.join('; ')}</p>
@@ -223,11 +149,7 @@
 
       document.querySelectorAll('.pricing-btn').forEach(btn => btn.addEventListener('click', () => {
         document.querySelectorAll('.card').forEach(c => c.classList.remove('selected'));
-        const card = btn.closest('.card');
-        card.classList.add('selected');
-        currentPlanIdx = +btn.dataset.slot;
-        promoInput.disabled = false;
-        generateTable();
+        const card = btn.closest('.card'); card.classList.add('selected'); currentPlanIdx = +btn.dataset.slot; promoInput.disabled = false; generateTable();
       }));
 
       document.querySelectorAll('.details-btn').forEach(btn => btn.addEventListener('click', () => {
@@ -238,13 +160,7 @@
       }));
     }
 
-    function resetPricing() {
-      pricingSection.style.display = 'none';
-      promoInput.disabled = true;
-      promoInput.value = '';
-      pricingBody.innerHTML = '';
-      document.querySelectorAll('.card').forEach(c => c.classList.remove('selected'));
-    }
+    function resetPricing() { pricingSection.style.display = 'none'; promoInput.disabled = true; promoInput.value = ''; pricingBody.innerHTML = ''; document.querySelectorAll('.card').forEach(c => c.classList.remove('selected')); }
 
     function generateTable() {
       if (currentPlanIdx === null) return;
@@ -263,22 +179,17 @@
       pricingSection.style.display = 'block';
     }
 
-    // Modal functionality
     function showModal(features) {
       featureList.innerHTML = '';
-      features.forEach(f => {
-        const li = document.createElement('li'); li.textContent = f;
-        featureList.appendChild(li);
-      });
+      features.forEach(f => { const li = document.createElement('li'); li.textContent = f; featureList.appendChild(li); });
       featureModal.style.display = 'flex';
     }
     closeModalBtn.addEventListener('click', () => featureModal.style.display = 'none');
-    window.addEventListener('click', e => {
-      if (e.target === featureModal) featureModal.style.display = 'none';
-    });
+    window.addEventListener('click', e => { if (e.target === featureModal) featureModal.style.display = 'none'; });
 
     promoInput.addEventListener('input', generateTable);
   </script>
 </body>
 </html>
+
 
