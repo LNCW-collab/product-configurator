@@ -9,7 +9,7 @@
     h1 { color: #EE3124; }
     .controls { display: flex; flex-wrap: wrap; gap: 1rem; margin-bottom: 1rem; }
     label { display: block; margin-top: 0.5rem; font-weight: bold; }
-    select { width: 100%; padding: 0.4rem; font-size: 0.95rem; }
+    select, input[type="text"] { width: 100%; padding: 0.4rem; font-size: 0.95rem; margin-top: 0.25rem; }
     .slot { flex: 1 1 220px; }
     .cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; }
     .card { border: 2px solid #EE3124; border-radius: 8px; padding: 1rem; }
@@ -33,24 +33,32 @@
       <select id="platform1" disabled><option disabled selected>— Select Platform —</option><option>Lexis+</option><option>Lexis+ AI</option></select>
       <label>Category</label>
       <select id="tier1" disabled><option disabled selected>— Select Category —</option></select>
+      <label>Custom Price</label>
+      <input type="text" id="price1" placeholder="$0.00" disabled>
     </div>
     <div class="slot" id="slot2">
       <label>Platform</label>
       <select id="platform2" disabled><option disabled selected>— Select Platform —</option><option>Lexis+</option><option>Lexis+ AI</option></select>
       <label>Category</label>
       <select id="tier2" disabled><option disabled selected>— Select Category —</option></select>
+      <label>Custom Price</label>
+      <input type="text" id="price2" placeholder="$0.00" disabled>
     </div>
     <div class="slot" id="slot3">
       <label>Platform</label>
       <select id="platform3" disabled><option disabled selected>— Select Platform —</option><option>Lexis+</option><option>Lexis+ AI</option></select>
       <label>Category</label>
       <select id="tier3" disabled><option disabled selected>— Select Category —</option></select>
+      <label>Custom Price</label>
+      <input type="text" id="price3" placeholder="$0.00" disabled>
     </div>
     <div class="slot" id="slot4">
       <label>Platform</label>
       <select id="platform4" disabled><option disabled selected>— Select Platform —</option><option>Lexis+</option><option>Lexis+ AI</option></select>
       <label>Category</label>
       <select id="tier4" disabled><option disabled selected>— Select Category —</option></select>
+      <label>Custom Price</label>
+      <input type="text" id="price4" placeholder="$0.00" disabled>
     </div>
   </div>
 
@@ -71,17 +79,18 @@
       "Group D": ["State Essential","State Enhanced","State Professional","Premiere"]
     };
     const featuresByTier = {
-      "State Essential": { price: "$100/mo", features: "State Briefs; Pleadings & Motions; State Jury Instructions", logo: "LexisPlus.png" },
-      "State Enhanced": { price: "$150/mo", features: "All Essential + Federal Cases; Federal Legislative Materials; Templates; Practical Guidance", logo: "LexisPlus.png" },
-      "State Professional": { price: "$200/mo", features: "All Enhanced + Analytics; News; Verdicts & Settlements; CourtLink", logo: "LexisPlus.png" },
-      "Premiere": { price: "$250/mo", features: "All Professional + AI Summaries; Advanced Research Tools", logo: "LexisPlus.png" }
+      "State Essential": { features: "State Briefs; Pleadings & Motions; State Jury Instructions", logo: "LexisPlus.png" },
+      "State Enhanced": { features: "All Essential + Federal Cases; Federal Legislative Materials; Templates; Practical Guidance", logo: "LexisPlus.png" },
+      "State Professional": { features: "All Enhanced + Analytics; News; Verdicts & Settlements; CourtLink", logo: "LexisPlus.png" },
+      "Premiere": { features: "All Professional + AI Summaries; Advanced Research Tools", logo: "LexisPlus.png" }
     };
 
     // DOM references
     const sgSelect = document.getElementById('stateGroup');
     const slots = [1,2,3,4].map(i => ({
       plat: document.getElementById('platform'+i),
-      tier: document.getElementById('tier'+i)
+      tier: document.getElementById('tier'+i),
+      priceInput: document.getElementById('price'+i)
     }));
     const cardsContainer = document.getElementById('cards');
 
@@ -90,21 +99,35 @@
 
     // On state group selection, enable all platform selects
     sgSelect.addEventListener('change', () => {
-      slots.forEach(s => { s.plat.disabled = false; s.tier.disabled = true; s.plat.selectedIndex = 0; s.tier.innerHTML = '<option disabled selected>— Select Category —</option>'; });
+      slots.forEach(s => { 
+        s.plat.disabled = false; 
+        s.tier.disabled = true; 
+        s.priceInput.disabled = true;
+        s.plat.selectedIndex = 0; 
+        s.tier.innerHTML = '<option disabled selected>— Select Category —</option>';
+        s.priceInput.value = '';
+      });
       cardsContainer.innerHTML = '';
     });
 
-    // For each slot, wire up platform -> tier, and tier -> card
-    slots.forEach((s,i) => {
+    // Wire platform -> tier and enable price entry
+    slots.forEach(s => {
       s.plat.addEventListener('change', () => {
         const group = sgSelect.value;
         const allowed = tierMapping[group] || [];
         s.tier.innerHTML = '<option disabled selected>— Select Category —</option>';
         allowed.forEach(t => s.tier.add(new Option(t,t)));
         s.tier.disabled = false;
+        s.priceInput.disabled = true;
         updateCards();
       });
-      s.tier.addEventListener('change', updateCards);
+      // On tier change, enable price input
+      s.tier.addEventListener('change', () => {
+        s.priceInput.disabled = false;
+        updateCards();
+      });
+      // On price input change, update cards
+      s.priceInput.addEventListener('input', updateCards);
     });
 
     function updateCards() {
@@ -112,13 +135,14 @@
       slots.forEach((s,i) => {
         const p = s.plat.value;
         const t = s.tier.value;
+        const customPrice = s.priceInput.value;
         if (p && t) {
           const data = featuresByTier[t];
           const card = document.createElement('div'); card.className = 'card';
           card.innerHTML = `
             <img src="${data.logo}" alt="Logo">
             <h2>${p} - ${t}</h2>
-            <p><strong>Price:</strong> ${data.price}</p>
+            <p><strong>Price:</strong> ${customPrice || '---'}</p>
             <p><strong>Features:</strong> ${data.features}</p>
           `;
           cardsContainer.appendChild(card);
