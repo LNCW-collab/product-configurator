@@ -1,39 +1,89 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Product Configurator Comparison</title>
   <style>
-    body { font-family: Arial, sans-serif; max-width: 960px; margin: 2rem auto; }
-    h1 { color: #EE3124; }
-    .controls { margin-bottom: 1rem; }
-    .controls label { font-weight: bold; margin-right: 0.5rem; }
+    /* --- Typography & Base --- */
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #FFFFFF;
+      color: #333333;
+      max-width: 960px;
+      margin: 2rem auto;
+      line-height: 1.5;
+    }
+    h1 {
+      color: #EE3124; /* LexisNexis Red */
+      margin-bottom: 1rem;
+    }
+    h2, h3 {
+      color: #333333;
+      margin-bottom: 0.5rem;
+    }
+    label {
+      font-weight: bold;
+      color: #333333;
+    }
+    /* --- Controls & Inputs --- */
+    .controls {
+      margin-bottom: 1rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .controls label {
+      margin-top: 0.25rem;
+    }
     .controls select,
     .controls input[type="number"],
     .controls textarea {
-      padding: 0.4rem;
       font-size: 0.95rem;
-      margin-right: 1rem;
-      margin-top: 0.25rem;
-      width: 100%;
+      padding: 0.4rem;
+      border: 1px solid #CCCCCC;
+      border-radius: 4px;
+      flex: 1 1 150px;
       box-sizing: border-box;
+      color: #333333;
     }
-    .print-button {
-      background: #0052CC;
-      color: #fff;
+    .controls textarea {
+      resize: vertical;
+      height: 100px;
+    }
+    /* --- Buttons --- */
+    .button-primary {
+      background-color: #0052CC; /* LexisNexis Blue */
+      color: #FFFFFF;
       border: none;
       padding: 0.5rem 1rem;
-      cursor: pointer;
       border-radius: 4px;
-      margin-bottom: 1rem;
+      cursor: pointer;
+      font-size: 0.95rem;
+      transition: background-color 0.2s ease;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
     }
-    .slots { display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 1rem; }
+    .button-primary:hover {
+      background-color: #003E99; /* Darker blue on hover */
+    }
+    .print-button, .reset-button {
+      margin-top: 1.5rem;
+    }
+    /* --- Layout: Slots & Cards --- */
+    .slots {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
     .slot {
       flex: 1 1 220px;
-      border: 1px solid #ccc;
+      border: 1px solid #CCCCCC;
       border-radius: 6px;
       padding: 0.5rem;
+      background-color: #FAFAFA;
     }
     .cards-grid {
       display: grid;
@@ -42,56 +92,97 @@
       margin: 2rem 0;
     }
     .card {
-      border: 2px solid #EE3124;
-      border-radius: 8px;
-      padding: 1rem;
       position: relative;
-      cursor: default;
-      transition: transform 0.2s;
+      border: 2px solid #EE3124; /* LexisNexis Red */
+      border-radius: 8px;
+      background-color: #FFFFFF;
+      padding: 1rem;
+      transition: transform 0.2s, box-shadow 0.2s;
     }
     .card.selected {
-      border-color: #0052CC;
-      box-shadow: 0 0 8px rgba(0,82,204,0.5);
+      border-color: #0052CC; /* selected state turns border blue */
+      box-shadow: 0 0 8px rgba(0, 82, 204, 0.5);
       transform: scale(1.02);
     }
     .card img {
       max-height: 60px;
-      width: auto;
-      display: block;
       margin: 0 auto 0.5rem;
+      display: block;
     }
     .card h2 {
-      margin: 0.5rem 0;
       font-size: 1.1rem;
+      margin: 0.5rem 0;
       text-align: center;
+      color: #333333;
     }
     .card p {
-      margin: 0.3rem 0;
       font-size: 0.9rem;
+      margin: 0.3rem 0;
       text-align: center;
+      color: #555555;
     }
     .card button {
-      background: #EE3124;
-      color: #fff;
-      border: none;
-      padding: 0.5rem;
-      cursor: pointer;
-      border-radius: 4px;
-      margin: 0.5rem 0 0.25rem;
       width: 100%;
+      background-color: #0052CC; /* Blue */
+      color: #FFFFFF;
+      border: none;
+      border-radius: 4px;
+      padding: 0.5rem;
+      font-size: 0.9rem;
+      cursor: pointer;
+      margin-top: 0.5rem;
+      transition: background-color 0.2s ease;
     }
+    .card button:hover {
+      background-color: #003E99;
+    }
+    .card .remove-btn {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      background: none;
+      border: none;
+      color: #EE3124;
+      font-size: 1.2rem;
+      cursor: pointer;
+      line-height: 1;
+    }
+    .card .remove-btn:hover {
+      color: #CC0000;
+    }
+    /* --- Pricing Section --- */
     #pricingSection {
-      border-top: 2px solid #EE3124;
-      padding-top: 1rem;
       display: none;
+      border-top: 2px solid #EE3124;
+      padding-top: 1.5rem;
+      margin-top: 1rem;
+      background-color: #FAFAFA;
+      border-radius: 6px;
+      padding-bottom: 2rem;
     }
     .pricing-tables {
       display: flex;
       flex-wrap: wrap;
       gap: 1rem;
+      margin-top: 1rem;
     }
     .pricing-table-wrapper {
       flex: 1 1 200px;
+      border: 1px solid #CCCCCC;
+      border-radius: 6px;
+      background-color: #FFFFFF;
+      padding: 0.75rem;
+    }
+    .pricing-table-wrapper h3 {
+      font-size: 1rem;
+      margin-bottom: 0.5rem;
+      text-align: center;
+      color: #333333;
+    }
+    .pricing-table-wrapper img {
+      max-height: 40px;
+      margin: 0 auto 0.5rem;
+      display: block;
     }
     #pricingTable {
       width: 100%;
@@ -100,96 +191,135 @@
     }
     #pricingTable th,
     #pricingTable td {
-      border: 1px solid #ccc;
+      border: 1px solid #CCCCCC;
       padding: 0.5rem;
       text-align: center;
+      font-size: 0.9rem;
+      color: #333333;
     }
-    #promoPrice,
-    #growthRate,
-    #numYears {
-      width: 120px;
-      display: inline-block;
-    }
-    textarea {
-      width: 100%;
-      height: 100px;
-      resize: vertical;
-      margin-top: 0.25rem;
-    }
-    /* Modal */
+    /* --- Feature Modal --- */
     #featureModal {
       display: none;
       position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
       background: rgba(0,0,0,0.5);
       justify-content: center;
       align-items: center;
     }
     #featureModal .modal-content {
-      background: #fff;
+      background: #FFFFFF;
       padding: 1.5rem;
       border-radius: 8px;
       max-width: 600px;
       width: 90%;
       box-shadow: 0 2px 10px rgba(0,0,0,0.3);
     }
-    #featureModal h3 { margin-top: 0; }
-    #featureModal ul { padding-left: 1.2rem; }
-    #featureModal button.close { background: #ccc; margin-top: 1rem; }
+    #featureModal h3 {
+      margin-top: 0;
+      color: #EE3124;
+    }
+    #featureModal ul {
+      padding-left: 1.2rem;
+      color: #333333;
+    }
+    #featureModal button.close {
+      background: #CCCCCC;
+      border: none;
+      padding: 0.4rem 0.8rem;
+      border-radius: 4px;
+      margin-top: 1rem;
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
+    /* --- Footer Buttons Container --- */
+    .footer-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-top: 2rem;
+    }
   </style>
 </head>
 <body>
-  <button class="print-button" onclick="window.print()">Download PDF</button>
   <h1>Lexis+ Product Configurator Comparison</h1>
 
+  <!-- State & Plan Count -->
   <div class="controls">
-    <label for="stateSelect">Jurisdiction (State)</label>
-    <select id="stateSelect">
-      <option disabled selected>— Select State —</option>
-    </select>
-    <label for="numPlans">Number of Plans</label>
-    <select id="numPlans" disabled>
-      <option disabled selected>— Select —</option>
-      <option>1</option>
-      <option>2</option>
-      <option>3</option>
-    </select>
-  </div>
-
-  <div class="slots controls" id="slotsContainer"></div>
-  <div class="cards-grid" id="cards"></div>
-
-  <div id="pricingSection">
-    <h2>Pricing Table</h2>
-    <div class="controls">
-      <label for="promoToggle">Include Promotional Period?</label>
-      <select id="promoToggle">
-        <option value="no" selected>No</option>
-        <option value="yes">Yes</option>
+    <div style="flex:1 1 200px;">
+      <label for="stateSelect">Jurisdiction (State)</label>
+      <select id="stateSelect">
+        <option disabled selected>— Select State —</option>
       </select>
-
-      <label for="promoPrice">Promo Monthly Rate</label>
-      <input type="number" id="promoPrice" placeholder="0.00" disabled>
-
-      <label for="numYears">Number of Years</label>
-      <select id="numYears">
+    </div>
+    <div style="flex:1 1 200px;">
+      <label for="numPlans">Number of Plans</label>
+      <select id="numPlans" disabled>
+        <option disabled selected>— Select —</option>
         <option>1</option>
         <option>2</option>
         <option>3</option>
-        <option>4</option>
       </select>
+    </div>
+  </div>
 
-      <label for="growthRate">Outyear Growth (%)</label>
-      <input type="number" id="growthRate" value="3" step="0.1">
+  <!-- Plan Slots -->
+  <div class="slots controls" id="slotsContainer"></div>
+
+  <!-- Cards Grid -->
+  <div class="cards-grid" id="cards"></div>
+
+  <!-- Pricing Section (hidden until cards selected) -->
+  <div id="pricingSection">
+    <h2>Pricing Table</h2>
+
+    <div class="controls">
+      <div style="flex:1 1 200px;">
+        <label for="promoToggle">Include Promotional Period?</label>
+        <select id="promoToggle">
+          <option value="no" selected>No</option>
+          <option value="yes">Yes</option>
+        </select>
+      </div>
+      <div style="flex:1 1 200px;">
+        <label for="promoPrice">Promo Monthly Rate</label>
+        <input type="number" id="promoPrice" placeholder="0.00" disabled />
+      </div>
+      <div style="flex:1 1 200px;">
+        <label for="numYears">Number of Years</label>
+        <select id="numYears">
+          <option>1</option>
+          <option>2</option>
+          <option>3</option>
+          <option>4</option>
+        </select>
+      </div>
+      <div style="flex:1 1 200px;">
+        <label for="growthRate">Outyear Growth (%)</label>
+        <input type="number" id="growthRate" value="3" step="0.1" />
+      </div>
     </div>
 
     <div class="pricing-tables" id="pricingTablesContainer"></div>
 
     <div class="controls">
-      <label for="skuInput">Additional SKUs (up to 10)</label>
-      <textarea id="skuInput" placeholder="Enter SKUs, one per line"></textarea>
+      <div style="flex:1 1 100%;">
+        <label for="skuInput">Additional SKUs (up to 10)</label>
+        <textarea id="skuInput" placeholder="Enter SKUs, one per line"></textarea>
+      </div>
     </div>
+  </div>
+
+  <!-- Footer Buttons -->
+  <div class="footer-buttons">
+    <button class="button-primary print-button" onclick="window.print()">
+      Download PDF
+    </button>
+    <button class="button-primary reset-button" id="resetBtn">
+      Reset
+    </button>
   </div>
 
   <!-- Feature Modal -->
@@ -202,7 +332,7 @@
   </div>
 
   <script>
-    // Map each state to its Group
+    // State → Group mapping
     const stateToGroup = {
       AL: 'Group A', AZ: 'Group A', CA: 'Group A', CO: 'Group A', CT: 'Group A',
       FL: 'Group A', GA: 'Group A', IL: 'Group A', IN: 'Group A', LA: 'Group A',
@@ -218,14 +348,14 @@
       WY: 'Group C'
     };
 
-    // Tier sets per group (now “Premier”)
+    // Tiers per Group
     const tierMapping = {
       'Group A': ["State Essential","State Enhanced","State Professional","Premier"],
       'Group B': ["State Essential","State Enhanced","State Professional","Premier"],
       'Group C': ["State Essential","State Enhanced","State Professional","Premier"]
     };
 
-    // Full feature lists per tier
+    // Features & logos per Tier
     const featuresByTier = {
       "State Essential": {
         features: [
@@ -271,26 +401,27 @@
       }
     };
 
-    // DOM references
-    const sgSelect             = document.getElementById('stateSelect');
-    const numSelect            = document.getElementById('numPlans');
-    const slotsContainer       = document.getElementById('slotsContainer');
-    const cardsContainer       = document.getElementById('cards');
-    const promoToggle          = document.getElementById('promoToggle');
-    const promoInput           = document.getElementById('promoPrice');
-    const numYears             = document.getElementById('numYears');
-    const growthRate           = document.getElementById('growthRate');
-    const pricingSection       = document.getElementById('pricingSection');
-    const pricingTablesContainer = document.getElementById('pricingTablesContainer');
-    const skuInput             = document.getElementById('skuInput');
-    const featureModal         = document.getElementById('featureModal');
-    const featureList          = document.getElementById('featureList');
-    const closeModalBtn        = featureModal.querySelector('.close');
+    // DOM refs
+    const sgSelect              = document.getElementById('stateSelect');
+    const numSelect             = document.getElementById('numPlans');
+    const slotsContainer        = document.getElementById('slotsContainer');
+    const cardsContainer        = document.getElementById('cards');
+    const promoToggle           = document.getElementById('promoToggle');
+    const promoInput            = document.getElementById('promoPrice');
+    const numYears              = document.getElementById('numYears');
+    const growthRate            = document.getElementById('growthRate');
+    const pricingSection        = document.getElementById('pricingSection');
+    const pricingTablesContainer= document.getElementById('pricingTablesContainer');
+    const skuInput              = document.getElementById('skuInput');
+    const featureModal          = document.getElementById('featureModal');
+    const featureList           = document.getElementById('featureList');
+    const closeModalBtn         = featureModal.querySelector('.close');
+    const resetBtn              = document.getElementById('resetBtn');
 
     let selectedPlanIdxs = [];
     let selectedGroup    = null;
 
-    // Populate state dropdown
+    // Populate State dropdown
     Object.keys(stateToGroup).forEach(st => {
       sgSelect.add(new Option(st, st));
     });
@@ -303,7 +434,7 @@
       resetPricing();
     });
 
-    // Render slots based on Number of Plans
+    // Render “slots” when # Plans changes
     numSelect.addEventListener('change', () => {
       const n = +numSelect.value;
       slotsContainer.innerHTML = '';
@@ -313,7 +444,6 @@
       resetPricing();
     });
 
-    // Render a single slot (Platform + Tier + Monthly Rate)
     function renderSlot(i) {
       const div = document.createElement('div');
       div.className = 'slot';
@@ -330,12 +460,11 @@
           <option disabled selected>— Select —</option>
         </select>
         <label>Monthly Rate</label>
-        <input type="number" id="price${i}" placeholder="0.00" disabled>
+        <input type="number" id="price${i}" placeholder="0.00" disabled />
       `;
       slotsContainer.appendChild(div);
     }
 
-    // Wire up slot logic once rendered
     function setupSlotLogic() {
       selectedPlanIdxs = [];
       resetPricing();
@@ -368,7 +497,6 @@
       });
     }
 
-    // Build cards and hook up toggle logic
     function updateCards() {
       cardsContainer.innerHTML = '';
       selectedPlanIdxs = [];
@@ -377,7 +505,7 @@
       slots.forEach((div, i) => {
         const plat = div.querySelector('select[id^=platform]').value;
         const tier = div.querySelector('select[id^=tier]').value;
-        const price = div.querySelector('input[id^=price]').value;
+        const price= div.querySelector('input[id^=price]').value;
         if (plat && tier) {
           const data = featuresByTier[tier];
           const logo = (plat === 'Protégé') ? 'Protege.png' : data.logo;
@@ -385,7 +513,8 @@
           card.className = 'card';
           card.dataset.slot = i;
           card.innerHTML = `
-            <img src="${logo}" alt="Logo">
+            <button class="remove-btn" data-slot="${i}">&times;</button>
+            <img src="${logo}" alt="Logo" />
             <h2>${plat} - ${tier}</h2>
             <p><strong>Monthly Rate:</strong> $${price}</p>
             <p><strong>Features:</strong> ${data.features.join('; ')}</p>
@@ -396,37 +525,45 @@
         }
       });
 
-      // Attach toggle for each “Show Pricing Table”
+      // Remove a card (clears that slot)
+      document.querySelectorAll('.remove-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const idx = +btn.dataset.slot;
+          const slotDiv = slotsContainer.children[idx];
+          slotDiv.querySelector('select[id^=platform]').value = '';
+          const tierSel = slotDiv.querySelector('select[id^=tier]');
+          tierSel.innerHTML = '<option disabled selected>— Select —</option>';
+          tierSel.disabled = true;
+          const priceInput = slotDiv.querySelector('input[id^=price]');
+          priceInput.value = '';
+          priceInput.disabled = true;
+          updateCards();
+          resetPricing();
+        });
+      });
+
+      // Toggle Show Pricing Table for each card
       document.querySelectorAll('.pricing-btn').forEach(btn => {
         btn.addEventListener('click', () => {
           const idx = +btn.dataset.slot;
           const card = btn.closest('.card');
-
-          // Toggle selection
           if (selectedPlanIdxs.includes(idx)) {
-            // Deselect
             selectedPlanIdxs = selectedPlanIdxs.filter(x => x !== idx);
             card.classList.remove('selected');
           } else {
-            // Select
             selectedPlanIdxs.push(idx);
             card.classList.add('selected');
           }
-
-          // Enable promo input only if any card is selected and toggle = yes
           promoInput.disabled = (promoToggle.value === 'no' || selectedPlanIdxs.length === 0);
-
-          // Generate tables for all selected
           generateTables();
         });
       });
 
-      // Attach modal for feature details
+      // View Full Features (modal)
       document.querySelectorAll('.details-btn').forEach(btn => {
         btn.addEventListener('click', () => {
           const idx = +btn.dataset.slot;
-          const div = slotsContainer.children[idx];
-          const tier = div.querySelector('select[id^=tier]').value;
+          const tier = slotsContainer.children[idx].querySelector('select[id^=tier]').value;
           showModal(featuresByTier[tier].features);
         });
       });
@@ -440,22 +577,20 @@
       numYears.value = '1';
       growthRate.value = '3';
       pricingTablesContainer.innerHTML = '';
-      document.querySelectorAll('.card').forEach(c => c.classList.remove('selected'));
       selectedPlanIdxs = [];
+      skuInput.value = '';
+      document.querySelectorAll('.card').forEach(c => c.classList.remove('selected'));
     }
 
-    // Create one pricing table per selected plan
     function generateTables() {
       if (selectedPlanIdxs.length === 0) {
         pricingSection.style.display = 'none';
         pricingTablesContainer.innerHTML = '';
         return;
       }
-
       pricingSection.style.display = 'block';
       pricingTablesContainer.innerHTML = '';
 
-      // Read common inputs
       const includePromo = (promoToggle.value === 'yes');
       const promo = includePromo ? +promoInput.value : 0;
       const years = +numYears.value;
@@ -469,7 +604,6 @@
         const data = featuresByTier[tier];
         const logo = (plat === 'Protégé') ? 'Protege.png' : data.logo;
 
-        // Build table HTML
         let rows = '';
         if (includePromo) {
           rows += `<tr><td>Promotional Period</td><td>$${promo.toFixed(2)}</td></tr>`;
@@ -479,12 +613,11 @@
           rows += `<tr><td>Year ${y}</td><td>$${rate.toFixed(2)}</td></tr>`;
         }
 
-        // Wrap in container
         const wrapper = document.createElement('div');
         wrapper.className = 'pricing-table-wrapper';
         wrapper.innerHTML = `
           <h3>${plat} - ${tier}</h3>
-          <img src="${logo}" alt="Logo" style="max-height:40px; margin-bottom:0.5rem;">
+          <img src="${logo}" alt="Logo" style="max-height:40px; margin-bottom:0.5rem;" />
           <table>
             <thead><tr><th>Period</th><th>Monthly Rate</th></tr></thead>
             <tbody>${rows}</tbody>
@@ -503,14 +636,11 @@
       });
       featureModal.style.display = 'flex';
     }
-    closeModalBtn.addEventListener('click', () => {
-      featureModal.style.display = 'none';
-    });
+    closeModalBtn.addEventListener('click', () => featureModal.style.display = 'none');
     window.addEventListener('click', e => {
       if (e.target === featureModal) featureModal.style.display = 'none';
     });
 
-    // Re-generate pricing whenever inputs change
     promoToggle.addEventListener('change', () => {
       promoInput.disabled = (promoToggle.value === 'no' || selectedPlanIdxs.length === 0);
       generateTables();
@@ -518,6 +648,15 @@
     promoInput.addEventListener('input', generateTables);
     numYears.addEventListener('change', generateTables);
     growthRate.addEventListener('input', generateTables);
+
+    resetBtn.addEventListener('click', () => {
+      sgSelect.selectedIndex = 0;
+      numSelect.disabled = true;
+      numSelect.selectedIndex = 0;
+      slotsContainer.innerHTML = '';
+      cardsContainer.innerHTML = '';
+      resetPricing();
+    });
   </script>
 </body>
 </html>
