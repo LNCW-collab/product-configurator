@@ -9,55 +9,187 @@
     h1 { color: #EE3124; }
     .controls { margin-bottom: 1rem; }
     .controls label { font-weight: bold; margin-right: 0.5rem; }
-    .controls select, .controls input[type="number"] { padding: 0.4rem; font-size: 0.95rem; margin-right: 1rem; }
+    .controls select,
+    .controls input[type="number"],
+    .controls textarea {
+      padding: 0.4rem;
+      font-size: 0.95rem;
+      margin-right: 1rem;
+      margin-top: 0.25rem;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    .print-button {
+      background: #0052CC;
+      color: #fff;
+      border: none;
+      padding: 0.5rem 1rem;
+      cursor: pointer;
+      border-radius: 4px;
+      margin-bottom: 1rem;
+    }
     .slots { display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 1rem; }
-    .slot { flex: 1 1 220px; border: 1px solid #ccc; border-radius: 6px; padding: 0.5rem; }
-    .cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; margin: 2rem 0; }
-    .card { border: 2px solid #EE3124; border-radius: 8px; padding: 1rem; position: relative; cursor: default; transition: transform 0.2s; }
-    .card.selected { border-color: #0052CC; box-shadow: 0 0 8px rgba(0,82,204,0.5); transform: scale(1.02); }
-    .card img { max-width: 100%; height: auto; }
-    .card h2 { margin: 0.5rem 0; font-size: 1.1rem; }
-    .card p { margin: 0.3rem 0; font-size: 0.9rem; }
-    .card button { background: #EE3124; color: #fff; border: none; padding: 0.5rem; cursor: pointer; border-radius: 4px; margin: 0.5rem 0 0.25rem; width: 100%; }
-    #pricingSection { border-top: 2px solid #EE3124; padding-top: 1rem; display: none; }
-    #pricingTable { width: 100%; border-collapse: collapse; margin-top: 0.5rem; }
-    #pricingTable th, #pricingTable td { border: 1px solid #ccc; padding: 0.5rem; text-align: center; }
-    #promoPrice { width: 120px; }
+    .slot {
+      flex: 1 1 220px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      padding: 0.5rem;
+    }
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1rem;
+      margin: 2rem 0;
+    }
+    .card {
+      border: 2px solid #EE3124;
+      border-radius: 8px;
+      padding: 1rem;
+      position: relative;
+      cursor: default;
+      transition: transform 0.2s;
+    }
+    .card.selected {
+      border-color: #0052CC;
+      box-shadow: 0 0 8px rgba(0,82,204,0.5);
+      transform: scale(1.02);
+    }
+    .card img {
+      max-height: 60px;
+      width: auto;
+      display: block;
+      margin: 0 auto 0.5rem;
+    }
+    .card h2 {
+      margin: 0.5rem 0;
+      font-size: 1.1rem;
+      text-align: center;
+    }
+    .card p {
+      margin: 0.3rem 0;
+      font-size: 0.9rem;
+      text-align: center;
+    }
+    .card button {
+      background: #EE3124;
+      color: #fff;
+      border: none;
+      padding: 0.5rem;
+      cursor: pointer;
+      border-radius: 4px;
+      margin: 0.5rem 0 0.25rem;
+      width: 100%;
+    }
+    #pricingSection {
+      border-top: 2px solid #EE3124;
+      padding-top: 1rem;
+      display: none;
+    }
+    .pricing-tables {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .pricing-table-wrapper {
+      flex: 1 1 200px;
+    }
+    #pricingTable {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 0.5rem;
+    }
+    #pricingTable th,
+    #pricingTable td {
+      border: 1px solid #ccc;
+      padding: 0.5rem;
+      text-align: center;
+    }
+    #promoPrice,
+    #growthRate,
+    #numYears {
+      width: 120px;
+      display: inline-block;
+    }
+    textarea {
+      width: 100%;
+      height: 100px;
+      resize: vertical;
+      margin-top: 0.25rem;
+    }
     /* Modal */
-    #featureModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; }
-    #featureModal .modal-content { background: #fff; padding: 1.5rem; border-radius: 8px; max-width: 500px; width: 90%; box-shadow: 0 2px 10px rgba(0,0,0,0.3); }
+    #featureModal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.5);
+      justify-content: center;
+      align-items: center;
+    }
+    #featureModal .modal-content {
+      background: #fff;
+      padding: 1.5rem;
+      border-radius: 8px;
+      max-width: 600px;
+      width: 90%;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    }
     #featureModal h3 { margin-top: 0; }
     #featureModal ul { padding-left: 1.2rem; }
     #featureModal button.close { background: #ccc; margin-top: 1rem; }
   </style>
 </head>
 <body>
-  <nav style="margin-bottom:1rem;">
-    <a href="groupA.html">Group A Plan Details</a> |
-    <a href="groupC.html">Group C Plan Details</a> |
-    <a href="groupD.html">Group D Plan Details</a>
-  </nav>
+  <button class="print-button" onclick="window.print()">Download PDF</button>
   <h1>Lexis+ Product Configurator Comparison</h1>
 
   <div class="controls">
-    <label for="stateGroup">Client State Group</label>
-    <select id="stateGroup"><option disabled selected>— Select Group —</option></select>
+    <label for="stateSelect">Jurisdiction (State)</label>
+    <select id="stateSelect">
+      <option disabled selected>— Select State —</option>
+    </select>
     <label for="numPlans">Number of Plans</label>
-    <select id="numPlans" disabled><option disabled selected>— Select —</option><option>1</option><option>2</option><option>3</option><option>4</option></select>
+    <select id="numPlans" disabled>
+      <option disabled selected>— Select —</option>
+      <option>1</option>
+      <option>2</option>
+      <option>3</option>
+    </select>
   </div>
 
   <div class="slots controls" id="slotsContainer"></div>
   <div class="cards-grid" id="cards"></div>
+
   <div id="pricingSection">
     <h2>Pricing Table</h2>
     <div class="controls">
-      <label for="promoPrice">Promotional Period Price</label>
+      <label for="promoToggle">Include Promotional Period?</label>
+      <select id="promoToggle">
+        <option value="no" selected>No</option>
+        <option value="yes">Yes</option>
+      </select>
+
+      <label for="promoPrice">Promo Monthly Rate</label>
       <input type="number" id="promoPrice" placeholder="0.00" disabled>
+
+      <label for="numYears">Number of Years</label>
+      <select id="numYears">
+        <option>1</option>
+        <option>2</option>
+        <option>3</option>
+        <option>4</option>
+      </select>
+
+      <label for="growthRate">Outyear Growth (%)</label>
+      <input type="number" id="growthRate" value="3" step="0.1">
     </div>
-    <table id="pricingTable">
-      <thead><tr><th>Period</th><th>Total Price</th></tr></thead>
-      <tbody></tbody>
-    </table>
+
+    <div class="pricing-tables" id="pricingTablesContainer"></div>
+
+    <div class="controls">
+      <label for="skuInput">Additional SKUs (up to 10)</label>
+      <textarea id="skuInput" placeholder="Enter SKUs, one per line"></textarea>
+    </div>
   </div>
 
   <!-- Feature Modal -->
@@ -70,61 +202,177 @@
   </div>
 
   <script>
-    const stateGroups = {"Group A":[],"Group C":[],"Group D":[]};
-    const tierMapping = {"Group A":["State Essential","State Enhanced","State Professional","Premiere"],"Group C":["State Essential","State Enhanced","State Professional","Premiere"],"Group D":["State Essential","State Enhanced","State Professional","Premiere"]};
-    const featuresByTier = {
-      "State Essential": { features: ["State Cases: broad state-specific case law","State Statutes and Legislation: real-time jurisdiction updates","State Briefs, Pleadings & Motions","Verdicts and Settlements: largest collection","State Jury Instructions","Shepard’s Citations Service"], logo: "LexisPlus.png" },
-      "State Enhanced": { features: ["All State Essential features","State Agency and Administrative Materials","Federal Cases: widest federal case law","Federal Legislative Materials: congressional acts & bills","Automated Templates: State Automated Templates","Matthew Bender: State edition","Practical Guidance: All Forms & Practical Guidance"], logo: "LexisPlus.png" },
-      "State Professional": { features: ["All State Enhanced features","Federal Agency & Administrative Materials","CourtLink: court dockets & documents","News: Law360 daily coverage","Verdicts and Settlements","Jury Instructions: All Jury Instructions"], logo: "LexisPlus.png" },
-      "Premiere": { features: ["All State Professional features","AI Summaries: advanced AI insights","Advanced Research Tools"], logo: "LexisPlus.png" }
+    // Map each state to its Group
+    const stateToGroup = {
+      AL: 'Group A', AZ: 'Group A', CA: 'Group A', CO: 'Group A', CT: 'Group A',
+      FL: 'Group A', GA: 'Group A', IL: 'Group A', IN: 'Group A', LA: 'Group A',
+      MA: 'Group A', MD: 'Group A', MI: 'Group A', MN: 'Group A', MO: 'Group A',
+      NJ: 'Group A', NV: 'Group A', NY: 'Group A', OH: 'Group A', OR: 'Group A',
+      PA: 'Group A', SC: 'Group A', TN: 'Group A', TX: 'Group A', VA: 'Group A',
+      WA: 'Group A', WI: 'Group A',
+      AR: 'Group B', DE: 'Group B', HI: 'Group B', IA: 'Group B', ID: 'Group B',
+      KS: 'Group B', KY: 'Group B', ME: 'Group B', MS: 'Group B', NC: 'Group B',
+      NE: 'Group B', NH: 'Group B', OK: 'Group B', RI: 'Group B', UT: 'Group B',
+      WV: 'Group B',
+      AK: 'Group C', ND: 'Group C', NM: 'Group C', SD: 'Group C', MT: 'Group C',
+      WY: 'Group C'
     };
 
-    const sgSelect = document.getElementById('stateGroup');
-    const numSelect = document.getElementById('numPlans');
-    const slotsContainer = document.getElementById('slotsContainer');
-    const cardsContainer = document.getElementById('cards');
-    const promoInput = document.getElementById('promoPrice');
-    const pricingSection = document.getElementById('pricingSection');
-    const pricingBody = document.querySelector('#pricingTable tbody');
-    const featureModal = document.getElementById('featureModal');
-    const featureList = document.getElementById('featureList');
-    const closeModalBtn = featureModal.querySelector('.close');
-    let currentPlanIdx = null;
+    // Tier sets per group (now “Premier”)
+    const tierMapping = {
+      'Group A': ["State Essential","State Enhanced","State Professional","Premier"],
+      'Group B': ["State Essential","State Enhanced","State Professional","Premier"],
+      'Group C': ["State Essential","State Enhanced","State Professional","Premier"]
+    };
 
-    Object.keys(stateGroups).forEach(g => sgSelect.add(new Option(g, g)));
-    sgSelect.addEventListener('change', () => { numSelect.disabled = false; numSelect.selectedIndex = 0; cardsContainer.innerHTML = ''; resetPricing(); });
+    // Full feature lists per tier
+    const featuresByTier = {
+      "State Essential": {
+        features: [
+          "State Cases: broad state-specific case law",
+          "State Statutes & Legislation: real-time updates",
+          "State Briefs, Pleadings & Motions",
+          "Verdicts & Settlements: largest collection",
+          "State Jury Instructions",
+          "Shepard’s Citations Service"
+        ],
+        logo: "LexisPlus.png"
+      },
+      "State Enhanced": {
+        features: [
+          "All State Essential features",
+          "State Agency & Admin Materials",
+          "Federal Cases: widest federal case law",
+          "Federal Legislative Materials: congressional acts & bills",
+          "Automated Templates: State Automated Templates",
+          "Matthew Bender: State edition",
+          "Practical Guidance: All Forms & Practical Guidance"
+        ],
+        logo: "LexisPlus.png"
+      },
+      "State Professional": {
+        features: [
+          "All State Enhanced features",
+          "Federal Agency & Admin Materials",
+          "CourtLink: court dockets & documents",
+          "News: Law360 daily coverage",
+          "Verdicts & Settlements",
+          "Jury Instructions: All Jury Instructions"
+        ],
+        logo: "LexisPlus.png"
+      },
+      "Premier": {
+        features: [
+          "All State Professional features",
+          "AI Summaries: advanced AI insights",
+          "Advanced Research Tools"
+        ],
+        logo: "LexisPlus.png"
+      }
+    };
 
-    numSelect.addEventListener('change', () => { const n = +numSelect.value; slotsContainer.innerHTML = ''; for (let i = 1; i <= n; i++) renderSlot(i); setupSlotLogic(); cardsContainer.innerHTML = ''; resetPricing(); });
+    // DOM references
+    const sgSelect             = document.getElementById('stateSelect');
+    const numSelect            = document.getElementById('numPlans');
+    const slotsContainer       = document.getElementById('slotsContainer');
+    const cardsContainer       = document.getElementById('cards');
+    const promoToggle          = document.getElementById('promoToggle');
+    const promoInput           = document.getElementById('promoPrice');
+    const numYears             = document.getElementById('numYears');
+    const growthRate           = document.getElementById('growthRate');
+    const pricingSection       = document.getElementById('pricingSection');
+    const pricingTablesContainer = document.getElementById('pricingTablesContainer');
+    const skuInput             = document.getElementById('skuInput');
+    const featureModal         = document.getElementById('featureModal');
+    const featureList          = document.getElementById('featureList');
+    const closeModalBtn        = featureModal.querySelector('.close');
 
+    let selectedPlanIdxs = [];
+    let selectedGroup    = null;
+
+    // Populate state dropdown
+    Object.keys(stateToGroup).forEach(st => {
+      sgSelect.add(new Option(st, st));
+    });
+    sgSelect.addEventListener('change', () => {
+      const st = sgSelect.value;
+      selectedGroup = stateToGroup[st];
+      numSelect.disabled = false;
+      numSelect.selectedIndex = 0;
+      cardsContainer.innerHTML = '';
+      resetPricing();
+    });
+
+    // Render slots based on Number of Plans
+    numSelect.addEventListener('change', () => {
+      const n = +numSelect.value;
+      slotsContainer.innerHTML = '';
+      for (let i = 1; i <= n; i++) renderSlot(i);
+      setupSlotLogic();
+      cardsContainer.innerHTML = '';
+      resetPricing();
+    });
+
+    // Render a single slot (Platform + Tier + Monthly Rate)
     function renderSlot(i) {
-      const div = document.createElement('div'); div.className = 'slot'; div.id = 'slot' + i;
+      const div = document.createElement('div');
+      div.className = 'slot';
+      div.id = 'slot' + i;
       div.innerHTML = `
         <label>Platform</label>
-        <select id="platform${i}"><option disabled selected>— Select —</option><option>Lexis+</option><option>Lexis+ AI</option></select>
+        <select id="platform${i}">
+          <option disabled selected>— Select —</option>
+          <option>Lexis+</option>
+          <option>Protégé</option>
+        </select>
         <label>Category</label>
-        <select id="tier${i}" disabled><option disabled selected>— Select —</option></select>
-        <label>Price per month per attorney</label>
+        <select id="tier${i}" disabled>
+          <option disabled selected>— Select —</option>
+        </select>
+        <label>Monthly Rate</label>
         <input type="number" id="price${i}" placeholder="0.00" disabled>
       `;
       slotsContainer.appendChild(div);
     }
 
+    // Wire up slot logic once rendered
     function setupSlotLogic() {
-      currentPlanIdx = null; resetPricing();
+      selectedPlanIdxs = [];
+      resetPricing();
       const slots = [...slotsContainer.children].map(div => ({
-        plat: div.querySelector('select[id^=platform]'), tier: div.querySelector('select[id^=tier]'), price: div.querySelector('input[id^=price]'), idx: [...slotsContainer.children].indexOf(div)
+        plat: div.querySelector('select[id^=platform]'),
+        tier: div.querySelector('select[id^=tier]'),
+        price: div.querySelector('input[id^=price]'),
+        idx: [...slotsContainer.children].indexOf(div)
       }));
 
       slots.forEach(s => {
         s.plat.disabled = false;
-        s.plat.addEventListener('change', () => { s.tier.disabled = false; s.tier.innerHTML = '<option disabled selected>— Select —</option>'; tierMapping[sgSelect.value].forEach(t => s.tier.add(new Option(t,t))); s.price.disabled = true; updateCards(); resetPricing(); });
-        s.tier.addEventListener('change', () => { s.price.disabled = false; updateCards(); resetPricing(); });
-        s.price.addEventListener('input', () => { updateCards(); resetPricing(); });
+        s.plat.addEventListener('change', () => {
+          s.tier.disabled = false;
+          s.tier.innerHTML = '<option disabled selected>— Select —</option>';
+          tierMapping[selectedGroup].forEach(t => s.tier.add(new Option(t, t)));
+          s.price.disabled = true;
+          updateCards();
+          resetPricing();
+        });
+        s.tier.addEventListener('change', () => {
+          s.price.disabled = false;
+          updateCards();
+          resetPricing();
+        });
+        s.price.addEventListener('input', () => {
+          updateCards();
+          resetPricing();
+        });
       });
     }
 
+    // Build cards and hook up toggle logic
     function updateCards() {
-      cardsContainer.innerHTML = ''; currentPlanIdx = null; resetPricing();
+      cardsContainer.innerHTML = '';
+      selectedPlanIdxs = [];
+      resetPricing();
       const slots = [...slotsContainer.children];
       slots.forEach((div, i) => {
         const plat = div.querySelector('select[id^=platform]').value;
@@ -132,13 +380,14 @@
         const price = div.querySelector('input[id^=price]').value;
         if (plat && tier) {
           const data = featuresByTier[tier];
-          // Determine correct logo
-          const logo = plat === 'Lexis+ AI' ? 'LexisPlusAi.png' : data.logo;
-          const card = document.createElement('div'); card.className = 'card'; card.dataset.slot = i;
+          const logo = (plat === 'Protégé') ? 'Protege.png' : data.logo;
+          const card = document.createElement('div');
+          card.className = 'card';
+          card.dataset.slot = i;
           card.innerHTML = `
             <img src="${logo}" alt="Logo">
             <h2>${plat} - ${tier}</h2>
-            <p><strong>Price:</strong> $${price} / attorney/mo</p>
+            <p><strong>Monthly Rate:</strong> $${price}</p>
             <p><strong>Features:</strong> ${data.features.join('; ')}</p>
             <button data-slot="${i}" class="pricing-btn">Show Pricing Table</button>
             <button data-slot="${i}" class="details-btn">View Full Features</button>
@@ -147,49 +396,131 @@
         }
       });
 
-      document.querySelectorAll('.pricing-btn').forEach(btn => btn.addEventListener('click', () => {
-        document.querySelectorAll('.card').forEach(c => c.classList.remove('selected'));
-        const card = btn.closest('.card'); card.classList.add('selected'); currentPlanIdx = +btn.dataset.slot; promoInput.disabled = false; generateTable();
-      }));
+      // Attach toggle for each “Show Pricing Table”
+      document.querySelectorAll('.pricing-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const idx = +btn.dataset.slot;
+          const card = btn.closest('.card');
 
-      document.querySelectorAll('.details-btn').forEach(btn => btn.addEventListener('click', () => {
-        const idx = +btn.dataset.slot;
-        const div = slotsContainer.children[idx];
-        const tier = div.querySelector('select[id^=tier]').value;
-        showModal(featuresByTier[tier].features);
-      }));
+          // Toggle selection
+          if (selectedPlanIdxs.includes(idx)) {
+            // Deselect
+            selectedPlanIdxs = selectedPlanIdxs.filter(x => x !== idx);
+            card.classList.remove('selected');
+          } else {
+            // Select
+            selectedPlanIdxs.push(idx);
+            card.classList.add('selected');
+          }
+
+          // Enable promo input only if any card is selected and toggle = yes
+          promoInput.disabled = (promoToggle.value === 'no' || selectedPlanIdxs.length === 0);
+
+          // Generate tables for all selected
+          generateTables();
+        });
+      });
+
+      // Attach modal for feature details
+      document.querySelectorAll('.details-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const idx = +btn.dataset.slot;
+          const div = slotsContainer.children[idx];
+          const tier = div.querySelector('select[id^=tier]').value;
+          showModal(featuresByTier[tier].features);
+        });
+      });
     }
 
-    function resetPricing() { pricingSection.style.display = 'none'; promoInput.disabled = true; promoInput.value = ''; pricingBody.innerHTML = ''; document.querySelectorAll('.card').forEach(c => c.classList.remove('selected')); }
+    function resetPricing() {
+      pricingSection.style.display = 'none';
+      promoToggle.value = 'no';
+      promoInput.disabled = true;
+      promoInput.value = '';
+      numYears.value = '1';
+      growthRate.value = '3';
+      pricingTablesContainer.innerHTML = '';
+      document.querySelectorAll('.card').forEach(c => c.classList.remove('selected'));
+      selectedPlanIdxs = [];
+    }
 
-    function generateTable() {
-      if (currentPlanIdx === null) return;
-      const div = slotsContainer.children[currentPlanIdx];
-      const price = +div.querySelector('input[id^=price]').value;
-      const promo = promoInput.value;
-      const y1 = price * 12;
-      const y2 = y1 * 1.03;
-      const y3 = y2 * 1.03;
-      pricingBody.innerHTML = `
-        <tr><td>Promotional Period</td><td>$${parseFloat(promo || 0).toFixed(2)}</td></tr>
-        <tr><td>Year 1</td><td>$${y1.toFixed(2)}</td></tr>
-        <tr><td>Year 2</td><td>$${y2.toFixed(2)}</td></tr>
-        <tr><td>Year 3</td><td>$${y3.toFixed(2)}</td></tr>
-      `;
+    // Create one pricing table per selected plan
+    function generateTables() {
+      if (selectedPlanIdxs.length === 0) {
+        pricingSection.style.display = 'none';
+        pricingTablesContainer.innerHTML = '';
+        return;
+      }
+
       pricingSection.style.display = 'block';
+      pricingTablesContainer.innerHTML = '';
+
+      // Read common inputs
+      const includePromo = (promoToggle.value === 'yes');
+      const promo = includePromo ? +promoInput.value : 0;
+      const years = +numYears.value;
+      const growth = +growthRate.value / 100;
+
+      selectedPlanIdxs.forEach(idx => {
+        const div = slotsContainer.children[idx];
+        const plat = div.querySelector('select[id^=platform]').value;
+        const tier = div.querySelector('select[id^=tier]').value;
+        const price = +div.querySelector('input[id^=price]').value;
+        const data = featuresByTier[tier];
+        const logo = (plat === 'Protégé') ? 'Protege.png' : data.logo;
+
+        // Build table HTML
+        let rows = '';
+        if (includePromo) {
+          rows += `<tr><td>Promotional Period</td><td>$${promo.toFixed(2)}</td></tr>`;
+        }
+        for (let y = 1; y <= years; y++) {
+          const rate = (y === 1) ? price : (price * Math.pow(1 + growth, y - 1));
+          rows += `<tr><td>Year ${y}</td><td>$${rate.toFixed(2)}</td></tr>`;
+        }
+
+        // Wrap in container
+        const wrapper = document.createElement('div');
+        wrapper.className = 'pricing-table-wrapper';
+        wrapper.innerHTML = `
+          <h3>${plat} - ${tier}</h3>
+          <img src="${logo}" alt="Logo" style="max-height:40px; margin-bottom:0.5rem;">
+          <table>
+            <thead><tr><th>Period</th><th>Monthly Rate</th></tr></thead>
+            <tbody>${rows}</tbody>
+          </table>
+        `;
+        pricingTablesContainer.appendChild(wrapper);
+      });
     }
 
     function showModal(features) {
       featureList.innerHTML = '';
-      features.forEach(f => { const li = document.createElement('li'); li.textContent = f; featureList.appendChild(li); });
+      features.forEach(f => {
+        const li = document.createElement('li');
+        li.textContent = f;
+        featureList.appendChild(li);
+      });
       featureModal.style.display = 'flex';
     }
-    closeModalBtn.addEventListener('click', () => featureModal.style.display = 'none');
-    window.addEventListener('click', e => { if (e.target === featureModal) featureModal.style.display = 'none'; });
+    closeModalBtn.addEventListener('click', () => {
+      featureModal.style.display = 'none';
+    });
+    window.addEventListener('click', e => {
+      if (e.target === featureModal) featureModal.style.display = 'none';
+    });
 
-    promoInput.addEventListener('input', generateTable);
+    // Re-generate pricing whenever inputs change
+    promoToggle.addEventListener('change', () => {
+      promoInput.disabled = (promoToggle.value === 'no' || selectedPlanIdxs.length === 0);
+      generateTables();
+    });
+    promoInput.addEventListener('input', generateTables);
+    numYears.addEventListener('change', generateTables);
+    growthRate.addEventListener('input', generateTables);
   </script>
 </body>
 </html>
+
 
 
