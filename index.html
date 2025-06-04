@@ -1,89 +1,39 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Product Configurator Comparison</title>
   <style>
-    /* --- Typography & Base --- */
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #FFFFFF;
-      color: #333333;
-      max-width: 960px;
-      margin: 2rem auto;
-      line-height: 1.5;
-    }
-    h1 {
-      color: #EE3124; /* LexisNexis Red */
-      margin-bottom: 1rem;
-    }
-    h2, h3 {
-      color: #333333;
-      margin-bottom: 0.5rem;
-    }
-    label {
-      font-weight: bold;
-      color: #333333;
-    }
-    /* --- Controls & Inputs --- */
-    .controls {
-      margin-bottom: 1rem;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 1rem;
-    }
-    .controls label {
-      margin-top: 0.25rem;
-    }
+    body { font-family: Arial, sans-serif; max-width: 960px; margin: 2rem auto; }
+    h1 { color: #EE3124; }
+    .controls { margin-bottom: 1rem; }
+    .controls label { font-weight: bold; margin-right: 0.5rem; }
     .controls select,
     .controls input[type="number"],
     .controls textarea {
-      font-size: 0.95rem;
       padding: 0.4rem;
-      border: 1px solid #CCCCCC;
-      border-radius: 4px;
-      flex: 1 1 150px;
-      box-sizing: border-box;
-      color: #333333;
-    }
-    .controls textarea {
-      resize: vertical;
-      height: 100px;
-    }
-    /* --- Buttons --- */
-    .button-primary {
-      background-color: #0052CC; /* LexisNexis Blue */
-      color: #FFFFFF;
-      border: none;
-      padding: 0.5rem 1rem;
-      border-radius: 4px;
-      cursor: pointer;
       font-size: 0.95rem;
-      transition: background-color 0.2s ease;
-      text-align: center;
-      text-decoration: none;
-      display: inline-block;
-    }
-    .button-primary:hover {
-      background-color: #003E99; /* Darker blue on hover */
+      margin-right: 1rem;
+      margin-top: 0.25rem;
+      width: 100%;
+      box-sizing: border-box;
     }
     .print-button, .reset-button {
-      margin-top: 1.5rem;
+      background: #0052CC;
+      color: #fff;
+      border: none;
+      padding: 0.5rem 1rem;
+      cursor: pointer;
+      border-radius: 4px;
+      margin: 0.5rem 1rem 0 0;
     }
-    /* --- Layout: Slots & Cards --- */
-    .slots {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 1rem;
-      margin-top: 1rem;
-    }
+    .slots { display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 1rem; }
     .slot {
       flex: 1 1 220px;
-      border: 1px solid #CCCCCC;
+      border: 1px solid #ccc;
       border-radius: 6px;
       padding: 0.5rem;
-      background-color: #FAFAFA;
     }
     .cards-grid {
       display: grid;
@@ -92,97 +42,73 @@
       margin: 2rem 0;
     }
     .card {
-      position: relative;
-      border: 2px solid #EE3124; /* LexisNexis Red */
+      border: 2px solid #EE3124;
       border-radius: 8px;
-      background-color: #FFFFFF;
       padding: 1rem;
-      transition: transform 0.2s, box-shadow 0.2s;
+      position: relative;
+      cursor: default;
+      transition: transform 0.2s;
     }
     .card.selected {
-      border-color: #0052CC; /* selected state turns border blue */
-      box-shadow: 0 0 8px rgba(0, 82, 204, 0.5);
+      border-color: #0052CC;
+      box-shadow: 0 0 8px rgba(0,82,204,0.5);
       transform: scale(1.02);
     }
     .card img {
       max-height: 60px;
-      margin: 0 auto 0.5rem;
+      width: auto;
       display: block;
+      margin: 0 auto 0.5rem;
     }
     .card h2 {
-      font-size: 1.1rem;
       margin: 0.5rem 0;
+      font-size: 1.1rem;
       text-align: center;
-      color: #333333;
     }
     .card p {
-      font-size: 0.9rem;
       margin: 0.3rem 0;
+      font-size: 0.9rem;
       text-align: center;
-      color: #555555;
     }
     .card button {
-      width: 100%;
-      background-color: #0052CC; /* Blue */
-      color: #FFFFFF;
+      background: #EE3124;
+      color: #fff;
       border: none;
-      border-radius: 4px;
       padding: 0.5rem;
-      font-size: 0.9rem;
       cursor: pointer;
-      margin-top: 0.5rem;
-      transition: background-color 0.2s ease;
-    }
-    .card button:hover {
-      background-color: #003E99;
+      border-radius: 4px;
+      margin: 0.5rem 0 0.25rem;
+      width: 100%;
     }
     .card .remove-btn {
       position: absolute;
-      top: 8px;
-      right: 8px;
-      background: none;
-      border: none;
+      top: 5px;
+      right: 5px;
+      background: transparent;
       color: #EE3124;
-      font-size: 1.2rem;
+      border: none;
+      font-size: 16px;
+      width: 20px;
+      height: 20px;
+      line-height: 20px;
+      text-align: center;
       cursor: pointer;
-      line-height: 1;
     }
-    .card .remove-btn:hover {
-      color: #CC0000;
-    }
-    /* --- Pricing Section --- */
     #pricingSection {
-      display: none;
       border-top: 2px solid #EE3124;
-      padding-top: 1.5rem;
-      margin-top: 1rem;
-      background-color: #FAFAFA;
-      border-radius: 6px;
-      padding-bottom: 2rem;
+      padding-top: 1rem;
+      display: none;
     }
     .pricing-tables {
       display: flex;
       flex-wrap: wrap;
       gap: 1rem;
-      margin-top: 1rem;
     }
     .pricing-table-wrapper {
       flex: 1 1 200px;
-      border: 1px solid #CCCCCC;
+      border: 1px solid #ccc;
       border-radius: 6px;
-      background-color: #FFFFFF;
-      padding: 0.75rem;
-    }
-    .pricing-table-wrapper h3 {
-      font-size: 1rem;
-      margin-bottom: 0.5rem;
-      text-align: center;
-      color: #333333;
-    }
-    .pricing-table-wrapper img {
-      max-height: 40px;
-      margin: 0 auto 0.5rem;
-      display: block;
+      padding: 0.5rem;
     }
     #pricingTable {
       width: 100%;
@@ -191,135 +117,81 @@
     }
     #pricingTable th,
     #pricingTable td {
-      border: 1px solid #CCCCCC;
+      border: 1px solid #ccc;
       padding: 0.5rem;
       text-align: center;
-      font-size: 0.9rem;
-      color: #333333;
     }
-    /* --- Feature Modal --- */
+    #promoPrice,
+    #growthRate,
+    #numYears {
+      width: 120px;
+      display: inline-block;
+    }
+    textarea {
+      width: 100%;
+      height: 100px;
+      resize: vertical;
+      margin-top: 0.25rem;
+    }
+    /* Modal */
     #featureModal {
       display: none;
       position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
       background: rgba(0,0,0,0.5);
       justify-content: center;
       align-items: center;
     }
     #featureModal .modal-content {
-      background: #FFFFFF;
+      background: #fff;
       padding: 1.5rem;
       border-radius: 8px;
       max-width: 600px;
       width: 90%;
       box-shadow: 0 2px 10px rgba(0,0,0,0.3);
     }
-    #featureModal h3 {
-      margin-top: 0;
-      color: #EE3124;
-    }
-    #featureModal ul {
-      padding-left: 1.2rem;
-      color: #333333;
-    }
-    #featureModal button.close {
-      background: #CCCCCC;
-      border: none;
-      padding: 0.4rem 0.8rem;
-      border-radius: 4px;
-      margin-top: 1rem;
-      cursor: pointer;
-      font-size: 0.9rem;
-    }
-    /* --- Footer Buttons Container --- */
-    .footer-buttons {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 1rem;
-      margin-top: 2rem;
-    }
+    #featureModal h3 { margin-top: 0; }
+    #featureModal ul { padding-left: 1.2rem; }
+    #featureModal button.close { background: #ccc; margin-top: 1rem; }
   </style>
 </head>
 <body>
   <h1>Lexis+ Product Configurator Comparison</h1>
 
-  <!-- State & Plan Count -->
   <div class="controls">
-    <div style="flex:1 1 200px;">
-      <label for="stateSelect">Jurisdiction (State)</label>
-      <select id="stateSelect">
-        <option disabled selected>— Select State —</option>
-      </select>
-    </div>
-    <div style="flex:1 1 200px;">
-      <label for="numPlans">Number of Plans</label>
-      <select id="numPlans" disabled>
-        <option disabled selected>— Select —</option>
-        <option>1</option>
-        <option>2</option>
-        <option>3</option>
-      </select>
-    </div>
+    <label for="stateSelect">Jurisdiction (State)</label>
+    <select id="stateSelect"><option disabled selected>— Select State —</option></select>
+    <label for="numPlans">Number of Plans</label>
+    <select id="numPlans" disabled><option disabled selected>— Select —</option><option>1</option><option>2</option><option>3</option></select>
   </div>
 
-  <!-- Plan Slots -->
   <div class="slots controls" id="slotsContainer"></div>
-
-  <!-- Cards Grid -->
   <div class="cards-grid" id="cards"></div>
 
-  <!-- Pricing Section (hidden until cards selected) -->
   <div id="pricingSection">
     <h2>Pricing Table</h2>
-
     <div class="controls">
-      <div style="flex:1 1 200px;">
-        <label for="promoToggle">Include Promotional Period?</label>
-        <select id="promoToggle">
-          <option value="no" selected>No</option>
-          <option value="yes">Yes</option>
-        </select>
-      </div>
-      <div style="flex:1 1 200px;">
-        <label for="promoPrice">Promo Monthly Rate</label>
-        <input type="number" id="promoPrice" placeholder="0.00" disabled />
-      </div>
-      <div style="flex:1 1 200px;">
-        <label for="numYears">Number of Years</label>
-        <select id="numYears">
-          <option>1</option>
-          <option>2</option>
-          <option>3</option>
-          <option>4</option>
-        </select>
-      </div>
-      <div style="flex:1 1 200px;">
-        <label for="growthRate">Outyear Growth (%)</label>
-        <input type="number" id="growthRate" value="3" step="0.1" />
-      </div>
+      <label for="promoToggle">Include Promotional Period?</label>
+      <select id="promoToggle"><option value="no" selected>No</option><option value="yes">Yes</option></select>
+      <label for="promoPrice">Promo Monthly Rate</label>
+      <input type="number" id="promoPrice" placeholder="0.00" disabled>
+      <label for="numYears">Number of Years</label>
+      <select id="numYears"><option>1</option><option>2</option><option>3</option><option>4</option></select>
+      <label for="growthRate">Outyear Growth (%)</label>
+      <input type="number" id="growthRate" value="3" step="0.1">
     </div>
-
     <div class="pricing-tables" id="pricingTablesContainer"></div>
-
     <div class="controls">
-      <div style="flex:1 1 100%;">
-        <label for="skuInput">Additional SKUs (up to 10)</label>
-        <textarea id="skuInput" placeholder="Enter SKUs, one per line"></textarea>
-      </div>
+      <label for="skuInput">Additional SKUs (up to 10)</label>
+      <textarea id="skuInput" placeholder="Enter SKUs, one per line"></textarea>
     </div>
   </div>
 
-  <!-- Footer Buttons -->
-  <div class="footer-buttons">
-    <button class="button-primary print-button" onclick="window.print()">
-      Download PDF
-    </button>
-    <button class="button-primary reset-button" id="resetBtn">
-      Reset
-    </button>
+  <!-- Buttons at bottom -->
+  <div class="controls">
+    <button class="print-button" onclick="window.print()">Download PDF</button>
+    <button class="reset-button" id="resetBtn">Reset</button>
   </div>
 
   <!-- Feature Modal -->
@@ -332,99 +204,30 @@
   </div>
 
   <script>
-    // State → Group mapping
-    const stateToGroup = {
-      AL: 'Group A', AZ: 'Group A', CA: 'Group A', CO: 'Group A', CT: 'Group A',
-      FL: 'Group A', GA: 'Group A', IL: 'Group A', IN: 'Group A', LA: 'Group A',
-      MA: 'Group A', MD: 'Group A', MI: 'Group A', MN: 'Group A', MO: 'Group A',
-      NJ: 'Group A', NV: 'Group A', NY: 'Group A', OH: 'Group A', OR: 'Group A',
-      PA: 'Group A', SC: 'Group A', TN: 'Group A', TX: 'Group A', VA: 'Group A',
-      WA: 'Group A', WI: 'Group A',
-      AR: 'Group B', DE: 'Group B', HI: 'Group B', IA: 'Group B', ID: 'Group B',
-      KS: 'Group B', KY: 'Group B', ME: 'Group B', MS: 'Group B', NC: 'Group B',
-      NE: 'Group B', NH: 'Group B', OK: 'Group B', RI: 'Group B', UT: 'Group B',
-      WV: 'Group B',
-      AK: 'Group C', ND: 'Group C', NM: 'Group C', SD: 'Group C', MT: 'Group C',
-      WY: 'Group C'
-    };
+    const stateToGroup = { AL:'Group A',AZ:'Group A',CA:'Group A',CO:'Group A',CT:'Group A',FL:'Group A',GA:'Group A',IL:'Group A',IN:'Group A',LA:'Group A',MA:'Group A',MD:'Group A',MI:'Group A',MN:'Group A',MO:'Group A',NJ:'Group A',NV:'Group A',NY:'Group A',OH:'Group A',OR:'Group A',PA:'Group A',SC:'Group A',TN:'Group A',TX:'Group A',VA:'Group A',WA:'Group A',WI:'Group A',AR:'Group B',DE:'Group B',HI:'Group B',IA:'Group B',ID:'Group B',KS:'Group B',KY:'Group B',ME:'Group B',MS:'Group B',NC:'Group B',NE:'Group B',NH:'Group B',OK:'Group B',RI:'Group B',UT:'Group B',WV:'Group B',AK:'Group C',ND:'Group C',NM:'Group C',SD:'Group C',MT:'Group C',WY:'Group C' };
+    const tierMapping = { 'Group A':['State Essential','State Enhanced','State Professional','Premier'], 'Group B':['State Essential','State Enhanced','State Professional','Premier'], 'Group C':['State Essential','State Enhanced','State Professional','Premier'] };
+    const featuresByTier = { 'State Essential': { features:['State Cases: broad state-specific case law','State Statutes & Legislation: real-time updates','State Briefs, Pleadings & Motions','Verdicts & Settlements: largest collection','State Jury Instructions','Shepard’s Citations Service'], logo:'LexisPlus.png' }, 'State Enhanced': { features:['All State Essential features','State Agency & Admin Materials','Federal Cases: widest federal case law','Federal Legislative Materials: congressional acts & bills','Automated Templates: State Automated Templates','Matthew Bender: State edition','Practical Guidance: All Forms & Practical Guidance'], logo:'LexisPlus.png' }, 'State Professional': { features:['All State Enhanced features','Federal Agency & Admin Materials','CourtLink: court dockets & documents','News: Law360 daily coverage','Verdicts & Settlements','Jury Instructions: All Jury Instructions'], logo:'LexisPlus.png' }, 'Premier': { features:['All State Professional features','AI Summaries: advanced AI insights','Advanced Research Tools'], logo:'LexisPlus.png' } };
 
-    // Tiers per Group
-    const tierMapping = {
-      'Group A': ["State Essential","State Enhanced","State Professional","Premier"],
-      'Group B': ["State Essential","State Enhanced","State Professional","Premier"],
-      'Group C': ["State Essential","State Enhanced","State Professional","Premier"]
-    };
-
-    // Features & logos per Tier
-    const featuresByTier = {
-      "State Essential": {
-        features: [
-          "State Cases: broad state-specific case law",
-          "State Statutes & Legislation: real-time updates",
-          "State Briefs, Pleadings & Motions",
-          "Verdicts & Settlements: largest collection",
-          "State Jury Instructions",
-          "Shepard’s Citations Service"
-        ],
-        logo: "LexisPlus.png"
-      },
-      "State Enhanced": {
-        features: [
-          "All State Essential features",
-          "State Agency & Admin Materials",
-          "Federal Cases: widest federal case law",
-          "Federal Legislative Materials: congressional acts & bills",
-          "Automated Templates: State Automated Templates",
-          "Matthew Bender: State edition",
-          "Practical Guidance: All Forms & Practical Guidance"
-        ],
-        logo: "LexisPlus.png"
-      },
-      "State Professional": {
-        features: [
-          "All State Enhanced features",
-          "Federal Agency & Admin Materials",
-          "CourtLink: court dockets & documents",
-          "News: Law360 daily coverage",
-          "Verdicts & Settlements",
-          "Jury Instructions: All Jury Instructions"
-        ],
-        logo: "LexisPlus.png"
-      },
-      "Premier": {
-        features: [
-          "All State Professional features",
-          "AI Summaries: advanced AI insights",
-          "Advanced Research Tools"
-        ],
-        logo: "LexisPlus.png"
-      }
-    };
-
-    // DOM refs
-    const sgSelect              = document.getElementById('stateSelect');
-    const numSelect             = document.getElementById('numPlans');
-    const slotsContainer        = document.getElementById('slotsContainer');
-    const cardsContainer        = document.getElementById('cards');
-    const promoToggle           = document.getElementById('promoToggle');
-    const promoInput            = document.getElementById('promoPrice');
-    const numYears              = document.getElementById('numYears');
-    const growthRate            = document.getElementById('growthRate');
-    const pricingSection        = document.getElementById('pricingSection');
-    const pricingTablesContainer= document.getElementById('pricingTablesContainer');
-    const skuInput              = document.getElementById('skuInput');
-    const featureModal          = document.getElementById('featureModal');
-    const featureList           = document.getElementById('featureList');
-    const closeModalBtn         = featureModal.querySelector('.close');
-    const resetBtn              = document.getElementById('resetBtn');
+    const sgSelect = document.getElementById('stateSelect');
+    const numSelect = document.getElementById('numPlans');
+    const slotsContainer = document.getElementById('slotsContainer');
+    const cardsContainer = document.getElementById('cards');
+    const promoToggle = document.getElementById('promoToggle');
+    const promoInput = document.getElementById('promoPrice');
+    const numYears = document.getElementById('numYears');
+    const growthRate = document.getElementById('growthRate');
+    const pricingSection = document.getElementById('pricingSection');
+    const pricingTablesContainer = document.getElementById('pricingTablesContainer');
+    const skuInput = document.getElementById('skuInput');
+    const featureModal = document.getElementById('featureModal');
+    const featureList = document.getElementById('featureList');
+    const closeModalBtn = featureModal.querySelector('.close');
+    const resetBtn = document.getElementById('resetBtn');
 
     let selectedPlanIdxs = [];
     let selectedGroup    = null;
 
-    // Populate State dropdown
-    Object.keys(stateToGroup).forEach(st => {
-      sgSelect.add(new Option(st, st));
-    });
+    Object.keys(stateToGroup).forEach(st => sgSelect.add(new Option(st, st)));
     sgSelect.addEventListener('change', () => {
       const st = sgSelect.value;
       selectedGroup = stateToGroup[st];
@@ -434,7 +237,6 @@
       resetPricing();
     });
 
-    // Render “slots” when # Plans changes
     numSelect.addEventListener('change', () => {
       const n = +numSelect.value;
       slotsContainer.innerHTML = '';
@@ -445,22 +247,14 @@
     });
 
     function renderSlot(i) {
-      const div = document.createElement('div');
-      div.className = 'slot';
-      div.id = 'slot' + i;
+      const div = document.createElement('div'); div.className = 'slot'; div.id = 'slot' + i;
       div.innerHTML = `
         <label>Platform</label>
-        <select id="platform${i}">
-          <option disabled selected>— Select —</option>
-          <option>Lexis+</option>
-          <option>Protégé</option>
-        </select>
+        <select id="platform${i}"><option disabled selected>— Select —</option><option>Lexis+</option><option>Protégé</option></select>
         <label>Category</label>
-        <select id="tier${i}" disabled>
-          <option disabled selected>— Select —</option>
-        </select>
+        <select id="tier${i}" disabled><option disabled selected>— Select —</option></select>
         <label>Monthly Rate</label>
-        <input type="number" id="price${i}" placeholder="0.00" disabled />
+        <input type="number" id="price${i}" placeholder="0.00" disabled>
       `;
       slotsContainer.appendChild(div);
     }
@@ -482,18 +276,10 @@
           s.tier.innerHTML = '<option disabled selected>— Select —</option>';
           tierMapping[selectedGroup].forEach(t => s.tier.add(new Option(t, t)));
           s.price.disabled = true;
-          updateCards();
-          resetPricing();
+          updateCards(); resetPricing();
         });
-        s.tier.addEventListener('change', () => {
-          s.price.disabled = false;
-          updateCards();
-          resetPricing();
-        });
-        s.price.addEventListener('input', () => {
-          updateCards();
-          resetPricing();
-        });
+        s.tier.addEventListener('change', () => { s.price.disabled = false; updateCards(); resetPricing(); });
+        s.price.addEventListener('input', () => { updateCards(); resetPricing(); });
       });
     }
 
@@ -505,16 +291,14 @@
       slots.forEach((div, i) => {
         const plat = div.querySelector('select[id^=platform]').value;
         const tier = div.querySelector('select[id^=tier]').value;
-        const price= div.querySelector('input[id^=price]').value;
+        const price = div.querySelector('input[id^=price]').value;
         if (plat && tier) {
           const data = featuresByTier[tier];
           const logo = (plat === 'Protégé') ? 'Protege.png' : data.logo;
-          const card = document.createElement('div');
-          card.className = 'card';
-          card.dataset.slot = i;
+          const card = document.createElement('div'); card.className = 'card'; card.dataset.slot = i;
           card.innerHTML = `
             <button class="remove-btn" data-slot="${i}">&times;</button>
-            <img src="${logo}" alt="Logo" />
+            <img src="${logo}" alt="Logo">
             <h2>${plat} - ${tier}</h2>
             <p><strong>Monthly Rate:</strong> $${price}</p>
             <p><strong>Features:</strong> ${data.features.join('; ')}</p>
@@ -525,24 +309,19 @@
         }
       });
 
-      // Remove a card (clears that slot)
-      document.querySelectorAll('.remove-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-          const idx = +btn.dataset.slot;
-          const slotDiv = slotsContainer.children[idx];
-          slotDiv.querySelector('select[id^=platform]').value = '';
-          const tierSel = slotDiv.querySelector('select[id^=tier]');
-          tierSel.innerHTML = '<option disabled selected>— Select —</option>';
-          tierSel.disabled = true;
-          const priceInput = slotDiv.querySelector('input[id^=price]');
-          priceInput.value = '';
-          priceInput.disabled = true;
-          updateCards();
-          resetPricing();
-        });
-      });
+      document.querySelectorAll('.remove-btn').forEach(btn => btn.addEventListener('click', () => {
+        const idx = +btn.dataset.slot;
+        const slotDiv = slotsContainer.children[idx];
+        slotDiv.querySelector('select[id^=platform]').value = '';
+        const tierSel = slotDiv.querySelector('select[id^=tier]');
+        tierSel.innerHTML = '<option disabled selected>— Select —</option>';
+        tierSel.disabled = true;
+        const priceInput = slotDiv.querySelector('input[id^=price]');
+        priceInput.value = '';
+        priceInput.disabled = true;
+        updateCards(); resetPricing();
+      }));
 
-      // Toggle Show Pricing Table for each card
       document.querySelectorAll('.pricing-btn').forEach(btn => {
         btn.addEventListener('click', () => {
           const idx = +btn.dataset.slot;
@@ -559,14 +338,11 @@
         });
       });
 
-      // View Full Features (modal)
-      document.querySelectorAll('.details-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-          const idx = +btn.dataset.slot;
-          const tier = slotsContainer.children[idx].querySelector('select[id^=tier]').value;
-          showModal(featuresByTier[tier].features);
-        });
-      });
+      document.querySelectorAll('.details-btn').forEach(btn => btn.addEventListener('click', () => {
+        const idx = +btn.dataset.slot;
+        const tier = slotsContainer.children[idx].querySelector('select[id^=tier]').value;
+        showModal(featuresByTier[tier].features);
+      }));
     }
 
     function resetPricing() {
@@ -578,8 +354,8 @@
       growthRate.value = '3';
       pricingTablesContainer.innerHTML = '';
       selectedPlanIdxs = [];
-      skuInput.value = '';
       document.querySelectorAll('.card').forEach(c => c.classList.remove('selected'));
+      skuInput.value = '';
     }
 
     function generateTables() {
@@ -605,9 +381,7 @@
         const logo = (plat === 'Protégé') ? 'Protege.png' : data.logo;
 
         let rows = '';
-        if (includePromo) {
-          rows += `<tr><td>Promotional Period</td><td>$${promo.toFixed(2)}</td></tr>`;
-        }
+        if (includePromo) rows += `<tr><td>Promotional Period</td><td>$${promo.toFixed(2)}</td></tr>`;
         for (let y = 1; y <= years; y++) {
           const rate = (y === 1) ? price : (price * Math.pow(1 + growth, y - 1));
           rows += `<tr><td>Year ${y}</td><td>$${rate.toFixed(2)}</td></tr>`;
@@ -617,9 +391,9 @@
         wrapper.className = 'pricing-table-wrapper';
         wrapper.innerHTML = `
           <h3>${plat} - ${tier}</h3>
-          <img src="${logo}" alt="Logo" style="max-height:40px; margin-bottom:0.5rem;" />
+          <img src="${logo}" alt="Logo" style="max-height:40px; margin-bottom:0.5rem;">
           <table>
-            <thead><tr><th>Period</th><th>Monthly Rate</th></tr></thead>
+            <thead><tr><th>Period</th><th>Monthly Rate</th></thead>
             <tbody>${rows}</tbody>
           </table>
         `;
@@ -630,16 +404,12 @@
     function showModal(features) {
       featureList.innerHTML = '';
       features.forEach(f => {
-        const li = document.createElement('li');
-        li.textContent = f;
-        featureList.appendChild(li);
+        const li = document.createElement('li'); li.textContent = f; featureList.appendChild(li);
       });
       featureModal.style.display = 'flex';
     }
     closeModalBtn.addEventListener('click', () => featureModal.style.display = 'none');
-    window.addEventListener('click', e => {
-      if (e.target === featureModal) featureModal.style.display = 'none';
-    });
+    window.addEventListener('click', e => { if (e.target === featureModal) featureModal.style.display = 'none'; });
 
     promoToggle.addEventListener('change', () => {
       promoInput.disabled = (promoToggle.value === 'no' || selectedPlanIdxs.length === 0);
@@ -660,3 +430,4 @@
   </script>
 </body>
 </html>
+
