@@ -1,7 +1,6 @@
-
 document.addEventListener("DOMContentLoaded", function () {
   // Initialize Quill editor
-  var quill = new Quill('#editor-container', {
+  window.quill = new Quill('#editor-container', {
     theme: 'snow'
   });
 
@@ -9,7 +8,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const saveButton = document.getElementById('save-button');
   if (saveButton) {
     saveButton.addEventListener('click', function () {
-      const content = quill.root.innerHTML;
+      const content = window.quill.root.innerHTML;
       console.log("Editor content:", content);
       alert("Editor content has been logged to the console.");
     });

@@ -101,7 +101,6 @@
 </div>
 <!-- Feature Modal -->
 <div id="featureModal"><div class="modal-content"><h3>Plan Features</h3><ul id="featureList"></ul><button class="close">Close</button></div></div>
-
 <div id="editor-container" style="height: 300px; margin-top: 20px;"></div>
 <button id="save-button">Save Content</button>
 </div><script>
@@ -266,5 +265,121 @@ document.addEventListener("DOMContentLoaded", function () {
     html2pdf().from(element).save("document.pdf");
   });
 });
-</script></body>
+</script><script>
+document.addEventListener("DOMContentLoaded", function () {
+  // Initialize Quill editor
+  window.quill = new Quill('#editor-container', {
+    theme: 'snow'
+  });
+
+  // Save button listener
+  const saveButton = document.getElementById('save-button');
+  if (saveButton) {
+    saveButton.addEventListener('click', function () {
+      const content = window.quill.root.innerHTML;
+      console.log("Editor content:", content);
+      alert("Editor content has been logged to the console.");
+    });
+  }
+});
+</script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const STORAGE_KEY = "qwilrCloneProgress";
+
+  function saveProgress() {
+    const state = document.getElementById("stateSelect").value;
+    const numPlans = document.getElementById("numPlans").value;
+    const slots = [...document.querySelectorAll(".slot")].map(slot => ({
+      platform: slot.querySelector("select[id^=platform]").value,
+      tier: slot.querySelector("select[id^=tier]").value,
+      price: slot.querySelector("input[id^=price]").value
+    }));
+    const promoToggle = document.getElementById("promoToggle").value;
+    const promoPrice = document.getElementById("promoPrice").value;
+    const numYears = document.getElementById("numYears").value;
+    const growthRate = document.getElementById("growthRate").value;
+    const skuInput = document.getElementById("skuInput").value;
+    const editorContent = window.quill ? window.quill.root.innerHTML : "";
+
+    const data = {
+      state,
+      numPlans,
+      slots,
+      promoToggle,
+      promoPrice,
+      numYears,
+      growthRate,
+      skuInput,
+      editorContent
+    };
+
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  }
+
+  function loadProgress() {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (!saved) return;
+    const data = JSON.parse(saved);
+
+    const stateSelect = document.getElementById("stateSelect");
+    const numPlansSelect = document.getElementById("numPlans");
+
+    if (data.state) {
+      stateSelect.value = data.state;
+      stateSelect.dispatchEvent(new Event("change"));
+    }
+
+    setTimeout(() => {
+      if (data.numPlans) {
+        numPlansSelect.value = data.numPlans;
+        numPlansSelect.dispatchEvent(new Event("change"));
+      }
+
+      setTimeout(() => {
+        data.slots.forEach((slotData, i) => {
+          const slot = document.getElementById(`slot${i + 1}`);
+          if (!slot) return;
+          const platform = slot.querySelector("select[id^=platform]");
+          const tier = slot.querySelector("select[id^=tier]");
+          const price = slot.querySelector("input[id^=price]");
+
+          platform.value = slotData.platform;
+          platform.dispatchEvent(new Event("change"));
+
+          setTimeout(() => {
+            tier.value = slotData.tier;
+            tier.dispatchEvent(new Event("change"));
+
+            setTimeout(() => {
+              price.value = slotData.price;
+              price.dispatchEvent(new Event("input"));
+            }, 100);
+          }, 100);
+        });
+
+        document.getElementById("promoToggle").value = data.promoToggle;
+        document.getElementById("promoPrice").value = data.promoPrice;
+        document.getElementById("numYears").value = data.numYears;
+        document.getElementById("growthRate").value = data.growthRate;
+        document.getElementById("skuInput").value = data.skuInput;
+
+        if (window.quill && data.editorContent) {
+          window.quill.root.innerHTML = data.editorContent;
+        }
+
+        document.getElementById("promoToggle").dispatchEvent(new Event("change"));
+      }, 300);
+    }, 300);
+  }
+
+  // Save on input changes
+  document.body.addEventListener("input", saveProgress);
+  document.body.addEventListener("change", saveProgress);
+
+  // Load on page load
+  loadProgress();
+});
+</script>
+</body>
 </html>
