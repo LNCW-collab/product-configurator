@@ -6,62 +6,65 @@
   <title>Product Configurator Comparison</title>
   <style>
     /* Typography & Base */
-    body { font-family: Arial, sans-serif; background-color: #FFFFFF; color: #333333; max-width: 960px; margin: 2rem auto; line-height: 1.5; }
+    body { font-family: Arial, sans-serif; background: #FFFFFF; color: #333; max-width: 960px; margin: 2rem auto; line-height: 1.5; }
     h1 { color: #EE3124; margin-bottom: 1rem; }
-    h2, h3 { color: #333333; margin-bottom: 0.5rem; }
-    label { font-weight: bold; color: #333333; }
+    h2, h3 { color: #333; margin-bottom: 0.5rem; }
+
     /* Controls & Inputs */
-    .controls { margin-bottom: 1rem; display: flex; flex-wrap: wrap; gap: 1rem; }
-    .controls label { margin-top: 0.25rem; }
-    .controls select, .controls input[type="number"], .controls textarea { font-size: 0.95rem; padding: 0.4rem; border: 1px solid #CCCCCC; border-radius: 4px; flex: 1 1 150px; box-sizing: border-box; color: #333333; }
+    .controls { display: flex; flex-wrap: wrap; gap: 1rem; margin-bottom: 1rem; }
+    .controls label { font-weight: bold; margin-top: 0.25rem; }
+    .controls select, .controls input[type="number"], .controls textarea {
+      padding: 0.4rem; font-size: 0.95rem; border: 1px solid #CCC; border-radius: 4px;
+      flex: 1 1 150px; box-sizing: border-box; color: #333;
+    }
     .controls textarea { resize: vertical; height: 100px; }
-    /* Buttons */
-    .button-primary { background-color: #0052CC; color: #FFFFFF; border: none; padding: 0.5rem 1rem; border-radius: 4px; cursor: pointer; font-size: 0.95rem; transition: background-color 0.2s ease; text-decoration: none; }
-    .button-primary:hover { background-color: #003E99; }
-    /* Layout: Slots & Cards */
+
+    /* Slots */
     .slots { display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 1rem; }
-    .slot { flex: 1 1 220px; border: 1px solid #CCCCCC; border-radius: 6px; padding: 0.5rem; background-color: #FAFAFA; }
+    .slot { background: #FAFAFA; border: 1px solid #CCC; border-radius: 6px; padding: 0.5rem; flex: 1 1 220px; }
+
+    /* Cards */
     .cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; margin: 2rem 0; }
-    .card { position: relative; border: 2px solid #EE3124; border-radius: 8px; background-color: #FFFFFF; padding: 1rem; transition: transform 0.2s, box-shadow 0.2s; }
+    .card { position: relative; background: #FFF; border: 2px solid #EE3124; border-radius: 8px; padding: 1rem; transition: transform 0.2s, box-shadow 0.2s; }
     .card.selected { border-color: #0052CC; box-shadow: 0 0 8px rgba(0,82,204,0.5); transform: scale(1.02); }
-    .card img { max-height: 60px; margin: 0 auto 0.5rem; display: block; }
-    .card h2 { font-size: 1.1rem; margin: 0.5rem 0; text-align: center; }
-    .card p { font-size: 0.9rem; margin: 0.3rem 0; text-align: center; color: #555555; }
-    .card button { width: 100%; background-color: #0052CC; color: #FFFFFF; border: none; border-radius: 4px; padding: 0.5rem; font-size: 0.9rem; cursor: pointer; margin-top: 0.5rem; transition: background-color 0.2s ease; }
-    .card button:hover { background-color: #003E99; }
-    .card .remove-btn { position: absolute; top: 5px; right: 5px; background: transparent; color: #EE3124; border: none; font-size: 16px; width: 20px; height: 20px; line-height: 20px; text-align: center; cursor: pointer; }
+    .card img { display: block; margin: 0 auto 0.5rem; max-height: 60px; }
+    .card h2 { font-size: 1.1rem; text-align: center; margin: 0.5rem 0; color: #333; }
+    .card p { font-size: 0.9rem; text-align: center; color: #555; margin: 0.3rem 0; }
+    .card button { width: 100%; background: #0052CC; color: #FFF; border: none; border-radius: 4px; padding: 0.5rem; font-size: 0.9rem; cursor: pointer; margin-top: 0.5rem; transition: background 0.2s; }
+    .card button:hover { background: #003E99; }
+    .card .remove-btn { position: absolute; top: 5px; right: 5px; background: none; border: none; color: #EE3124; font-size: 16px; width: 20px; height: 20px; line-height: 20px; text-align: center; cursor: pointer; }
+    .card .remove-btn:hover { color: #CC0000; }
+
     /* Pricing Section */
-    #pricingSection { display: none; border-top: 2px solid #EE3124; padding-top: 1.5rem; margin-top: 1rem; background-color: #FAFAFA; border-radius: 6px; padding-bottom: 2rem; }
+    #pricingSection { display: none; background: #FAFAFA; border-top: 2px solid #EE3124; border-radius: 6px; padding: 1.5rem; margin-top: 1rem; }
     .pricing-tables { display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 1rem; }
-    .pricing-table-wrapper { flex: 1 1 200px; border: 1px solid #CCCCCC; border-radius: 6px; background-color: #FFFFFF; padding: 0.75rem; }
-    .pricing-table-wrapper h3, .pricing-table-wrapper img { text-align: center; }
-    #pricingTable { width: 100%; border-collapse: collapse; margin-top: 0.5rem; }
-    #pricingTable th, #pricingTable td { border: 1px solid #CCCCCC; padding: 0.5rem; text-align: center; font-size: 0.9rem; color: #333333; }
-    /* Feature Modal */
-    #featureModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; }
-    #featureModal .modal-content { background: #FFFFFF; padding: 1.5rem; border-radius: 8px; max-width: 600px; width: 90%; box-shadow: 0 2px 10px rgba(0,0,0,0.3); }
-    #featureModal h3 { margin-top: 0; color: #EE3124; }
-    #featureModal ul { padding-left: 1.2rem; color: #333333; }
-    #featureModal button.close { background: #CCCCCC; border: none; padding: 0.4rem 0.8rem; border-radius: 4px; margin-top: 1rem; cursor: pointer; font-size: 0.9rem; }
-    /* Footer Buttons */
+    .pricing-table-wrapper { background: #FFF; border: 1px solid #CCC; border-radius: 6px; padding: 0.75rem; flex: 1 1 200px; }
+    .pricing-table-wrapper h3 { text-align: center; margin-bottom: 0.5rem; font-size: 1rem; color: #333; }
+    .pricing-table-wrapper img { display: block; margin: 0 auto 0.5rem; max-height: 40px; }
+    .pricing-table-wrapper table { width: 100%; border-collapse: collapse; }
+    .pricing-table-wrapper th, .pricing-table-wrapper td { border: 1px solid #CCC; padding: 0.5rem; text-align: center; font-size: 0.9rem; }
+
+    /* Click-wrap & Footer Buttons */
     .footer-buttons { display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 2rem; }
+    .button-primary { background: #0052CC; color: #FFF; border: none; border-radius: 4px; padding: 0.5rem 1rem; font-size: 0.95rem; cursor: pointer; transition: background 0.2s; text-decoration: none; }
+    .button-primary:hover { background: #003E99; }
+
+    /* Feature Modal */
+    #featureModal { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; }
+    #featureModal .modal-content { background: #FFF; padding: 1.5rem; border-radius: 8px; max-width: 600px; width: 90%; box-shadow: 0 2px 10px rgba(0,0,0,0.3); }
+    #featureModal h3 { color: #EE3124; margin-top: 0; }
+    #featureModal ul { padding-left: 1.2rem; color: #333; }
+    #featureModal button.close { background: #CCC; border: none; border-radius: 4px; padding: 0.4rem 0.8rem; cursor: pointer; }
   </style>
 </head>
 <body>
   <h1>Lexis+ Product Configurator Comparison</h1>
 
-  <!-- Clickwrap -->
-  <div class="controls">
-    <div style="flex:1 1 100%;">
-      <label><input type="checkbox" id="agreeTerms"> I agree to the <a href="terms.html" target="_blank" style="color:#0052CC; text-decoration:underline;">Terms &amp; Conditions</a></label>
-    </div>
-  </div>
-
-  <!-- State & Plan Count (disabled until agree) -->
+  <!-- State & Plans -->
   <div class="controls">
     <div style="flex:1 1 200px;">
       <label for="stateSelect">Jurisdiction (State)</label>
-      <select id="stateSelect" disabled><option disabled selected>— Select State —</option></select>
+      <select id="stateSelect"><option disabled selected>— Select State —</option></select>
     </div>
     <div style="flex:1 1 200px;">
       <label for="numPlans">Number of Plans</label>
@@ -69,13 +72,13 @@
     </div>
   </div>
 
-  <!-- Plan Slots -->
+  <!-- Slots -->
   <div class="slots controls" id="slotsContainer"></div>
 
-  <!-- Cards Grid -->
+  <!-- Cards -->
   <div class="cards-grid" id="cards"></div>
 
-  <!-- Pricing Section -->
+  <!-- Pricing Table Section -->
   <div id="pricingSection">
     <h2>Pricing Table</h2>
     <div class="controls">
@@ -88,7 +91,10 @@
     <div class="controls"><div style="flex:1 1 100%;"><label for="skuInput">Additional SKUs (up to 10)</label><textarea id="skuInput" placeholder="Enter SKUs, one per line"></textarea></div></div>
   </div>
 
-    <!-- Footer Buttons -->
+  <!-- Click-wrap Terms -->
+  <div class="controls"><input type="checkbox" id="agreeTerms" /><label for="agreeTerms">I agree to the Terms & Conditions for this quote</label></div>
+
+  <!-- Footer Buttons -->
   <div class="footer-buttons">
     <button class="button-primary print-button" onclick="window.print()">Download PDF</button>
     <button class="button-primary reset-button" id="resetBtn">Reset</button>
@@ -96,18 +102,163 @@
   </div>
 
   <!-- Feature Modal -->
+  <div id="featureModal"><div class="modal-content"><h3>Plan Features</h3><ul id="featureList"></ul><button class="close">Close</button></div></div>
 
   <script>
-    const stateToGroup = { AL:'Group A',AZ:'Group A',CA:'Group A',CO:'Group A',CT:'Group A',FL:'Group A',GA:'Group A',IL:'Group A',IN:'Group A',LA:'Group A',MA:'Group A',MD:'Group A',MI:'Group A',MN:'Group A',MO:'Group A',NJ:'Group A',NV:'Group A',NY:'Group A',OH:'Group A',OR:'Group A',PA:'Group A',SC:'Group A',TN:'Group A',TX:'Group A',VA:'Group A',WA:'Group A',WI:'Group A',AR:'Group B',DE:'Group B',HI:'Group B',IA:'Group B',ID:'Group B',KS:'Group B',KY:'Group B',ME:'Group B',MS:'Group B',NC:'Group B',NE:'Group B',NH:'Group B',OK:'Group B',RI:'Group B',UT:'Group B',WV:'Group B',AK:'Group C',ND:'Group C',NM:'Group C',SD:'Group C',MT:'Group C',WY:'Group C'};
-    const tierMapping = { 'Group A':['State Essential','State Enhanced','State Professional','Premier'], 'Group B':['State Essential','State Enhanced','State Professional','Premier'], 'Group C':['State Essential','State Enhanced','State Professional','Premier'] };
-    const featuresByTier = { 'State Essential': { features:['State Cases…','State Statutes…','State Briefs…','Verdicts…','Jury Instructions','Shepard’s Citations'], logo:'LexisPlus.png' }, 'State Enhanced': { features:['All Essential…','Agency Materials','Federal Cases…','Legislative Materials','Automated Templates','Matthew Bender','Practical Guidance'], logo:'LexisPlus.png' }, 'State Professional': { features:['All Enhanced…','Agency Materials','CourtLink','News: Law360','Verdicts','Jury Instructions'], logo:'LexisPlus.png' }, 'Premier': { features:['All Professional…','AI Summaries','Advanced Tools'], logo:'LexisPlus.png' }};
-    const agree = document.getElementById('agreeTerms');
-    const toggles = ['stateSelect','numPlans'];
-    agree.addEventListener('change', () => toggles.forEach(id => document.getElementById(id).disabled = !agree.checked));
+    // State → Group
+    const stateToGroup = {AL:'Group A',AZ:'Group A',CA:'Group A',CO:'Group A',CT:'Group A',FL:'Group A',GA:'Group A',IL:'Group A',IN:'Group A',LA:'Group A',MA:'Group A',MD:'Group A',MI:'Group A',MN:'Group A',MO:'Group A',NJ:'Group A',NV:'Group A',NY:'Group A',OH:'Group A',OR:'Group A',PA:'Group A',SC:'Group A',TN:'Group A',TX:'Group A',VA:'Group A',WA:'Group A',WI:'Group A',AR:'Group B',DE:'Group B',HI:'Group B',IA:'Group B',ID:'Group B',KS:'Group B',KY:'Group B',ME:'Group B',MS:'Group B',NC:'Group B',NE:'Group B',NH:'Group B',OK:'Group B',RI:'Group B',UT:'Group B',WV:'Group B',AK:'Group C',ND:'Group C',NM:'Group C',SD:'Group C',MT:'Group C',WY:'Group C'};
+    const tierMapping = {'Group A':['State Essential','State Enhanced','State Professional','Premier'],'Group B':['State Essential','State Enhanced','State Professional','Premier'],'Group C':['State Essential','State Enhanced','State Professional','Premier']};
+    const featuresByTier = { 'State Essential':{features:['State Cases: broad state-specific case law','State Statutes & Legislation: real-time updates','State Briefs, Pleadings & Motions','Verdicts & Settlements: largest collection','State Jury Instructions','Shepard’s Citations Service'],logo:'LexisPlus.png'}, 'State Enhanced':{features:['All State Essential features','State Agency & Admin Materials','Federal Cases: widest federal case law','Federal Legislative Materials: congressional acts & bills','Automated Templates: State Automated Templates','Matthew Bender: State edition','Practical Guidance: All Forms & Practical Guidance'],logo:'LexisPlus.png'}, 'State Professional':{features:['All State Enhanced features','Federal Agency & Admin Materials','CourtLink: court dockets & documents','News: Law360 daily coverage','Verdicts & Settlements','Jury Instructions: All Jury Instructions'],logo:'LexisPlus.png'}, 'Premier':{features:['All State Professional features','AI Summaries: advanced AI insights','Advanced Research Tools'],logo:'LexisPlus.png'} };
 
-    // (rest of existing JS: renderSlot, setupSlotLogic, updateCards, resetPricing, generateTables, showModal, resetBtn listener, etc.)
+    // DOM refs
+    const sgSelect               = document.getElementById('stateSelect');
+    const numSelect              = document.getElementById('numPlans');
+    const slotsContainer         = document.getElementById('slotsContainer');
+    const cardsContainer         = document.getElementById('cards');
+    const promoToggle            = document.getElementById('promoToggle');
+    const promoInput             = document.getElementById('promoPrice');
+    const numYears               = document.getElementById('numYears');
+    const growthRate             = document.getElementById('growthRate');
+    const pricingSection         = document.getElementById('pricingSection');
+    const pricingTablesContainer = document.getElementById('pricingTablesContainer');
+    const skuInput               = document.getElementById('skuInput');
+    const agreeTerms             = document.getElementById('agreeTerms');
+    const proceedBtn             = document.getElementById('proceedBtn');
+    const resetBtn               = document.getElementById('resetBtn');
+    const featureModal           = document.getElementById('featureModal');
+    const featureList            = document.getElementById('featureList');
+    const closeModalBtn          = featureModal.querySelector('.close');
+
+    let selectedPlanIdxs = [];
+    let selectedGroup    = null;
+
+    // Populate State dropdown
+    Object.keys(stateToGroup).forEach(st => sgSelect.add(new Option(st, st)));
+    sgSelect.addEventListener('change', () => {
+      selectedGroup = stateToGroup[sgSelect.value];
+      numSelect.disabled = false;
+      numSelect.selectedIndex = 0;
+      cardsContainer.innerHTML = '';
+      resetPricing();
+    });
+
+    // Render slots
+    numSelect.addEventListener('change', () => {
+      slotsContainer.innerHTML = '';
+      for (let i=1; i<=+numSelect.value; i++) renderSlot(i);
+      setupSlotLogic();
+      cardsContainer.innerHTML = '';
+      resetPricing();
+    });
+
+    function renderSlot(i) {
+      const div = document.createElement('div'); div.className='slot'; div.id='slot'+i;
+      div.innerHTML = `
+        <label>Platform</label>
+        <select id="platform${i}"><option disabled selected>— Select —</option><option>Lexis+</option><option>Protégé</option></select>
+        <label>Category</label>
+        <select id="tier${i}" disabled><option disabled selected>— Select —</option></select>
+        <label>Monthly Rate</label>
+        <input type="number" id="price${i}" placeholder="0.00" disabled />
+      `;
+      slotsContainer.appendChild(div);
+    }
+
+    function setupSlotLogic() {
+      selectedPlanIdxs = [];
+      resetPricing();
+      const slots = [...slotsContainer.children].map(div=>({plat:div.querySelector('select[id^=platform]'),tier:div.querySelector('select[id^=tier]'),price:div.querySelector('input[id^=price]'),idx:[...slotsContainer.children].indexOf(div)}));
+      slots.forEach(s=>{
+        s.plat.disabled=false;
+        s.plat.addEventListener('change',()=>{
+          s.tier.disabled=false;
+          s.tier.innerHTML='<option disabled selected>— Select —</option>';
+          tierMapping[selectedGroup].forEach(t=>s.tier.add(new Option(t,t)));
+          s.price.disabled=true; updateCards(); resetPricing();
+        });
+        s.tier.addEventListener('change',()=>{s.price.disabled=false; updateCards(); resetPricing();});
+        s.price.addEventListener('input',()=>{updateCards(); resetPricing();});
+      });
+    }
+
+    function updateCards() {
+      cardsContainer.innerHTML = ''; selectedPlanIdxs=[]; resetPricing();
+      [...slotsContainer.children].forEach((div,i)=>{
+        const plat=div.querySelector('select[id^=platform]').value;
+        const tier=div.querySelector('select[id^=tier]').value;
+        const price=div.querySelector('input[id^=price]').value;
+        if(plat&&tier){
+          const data=featuresByTier[tier];
+          const logo=(plat==='Protégé')?'Protege.png':data.logo;
+          const card=document.createElement('div');card.className='card';card.dataset.slot=i;
+          card.innerHTML=`
+            <button class="remove-btn" data-slot="${i}">&times;</button>
+            <img src="${logo}" alt="Logo" />
+            <h2>${plat} - ${tier}</h2>
+            <p><strong>Monthly Rate:</strong> $${price}</p>
+            <p><strong>Features:</strong> ${data.features.join('; ')}</p>
+            <button data-slot="${i}" class="pricing-btn">Show Pricing Table</button>
+            <button data-slot="${i}" class="details-btn">View Full Features</button>
+          `;
+          cardsContainer.appendChild(card);
+        }
+      });
+
+      // Remove
+      document.querySelectorAll('.remove-btn').forEach(btn=>btn.addEventListener('click',()=>{
+        const idx=+btn.dataset.slot;const slot=slotsContainer.children[idx];
+        slot.querySelector('select[id^=platform]').value='';
+        const ts=slot.querySelector('select[id^=tier]');ts.innerHTML='<option disabled selected>— Select —</option>';ts.disabled=true;
+        const pi=slot.querySelector('input[id^=price]');pi.value='';pi.disabled=true;
+        updateCards();resetPricing();
+      }));
+
+      // Toggle pricing
+      document.querySelectorAll('.pricing-btn').forEach(btn=>btn.addEventListener('click',()=>{
+        const idx=+btn.dataset.slot;const card=btn.closest('.card');
+        if(selectedPlanIdxs.includes(idx)){selectedPlanIdxs=selectedPlanIdxs.filter(x=>x!==idx);card.classList.remove('selected');}
+        else{selectedPlanIdxs.push(idx);card.classList.add('selected');}
+        promoInput.disabled=(promoToggle.value==='no'||selectedPlanIdxs.length===0);
+        generateTables();updateProceed();
+      }));
+
+      // Details modal
+      document.querySelectorAll('.details-btn').forEach(btn=>btn.addEventListener('click',()=>{
+        const idx=+btn.dataset.slot;
+        const tier=slotsContainer.children[idx].querySelector('select[id^=tier]').value;
+        showModal(featuresByTier[tier].features);
+      }));
+    }
+
+    function resetPricing(){
+      pricingSection.style.display='none';promoToggle.value='no';promoInput.disabled=true;promoInput.value='';numYears.value='1';growthRate.value='3';pricingTablesContainer.innerHTML='';selectedPlanIdxs=[];skuInput.value='';document.querySelectorAll('.card').forEach(c=>c.classList.remove('selected'));
+      agreeTerms.checked=false;proceedBtn.disabled=true;
+    }
+
+    function generateTables(){
+      if(selectedPlanIdxs.length===0){pricingSection.style.display='none';pricingTablesContainer.innerHTML='';return;}pricingSection.style.display='block';pricingTablesContainer.innerHTML='';
+      const includePromo=(promoToggle.value==='yes');const promo=includePromo?+promoInput.value:0;const years=+numYears.value;const growth=+growthRate.value/100;
+      selectedPlanIdxs.forEach(idx=>{
+        const div=slotsContainer.children[idx];const plat=div.querySelector('select[id^=platform]').value;const tier=div.querySelector('select[id^=tier]').value;const price=+div.querySelector('input[id^=price]').value;
+        const data=featuresByTier[tier];const logo=(plat==='Protégé')?'Protege.png':data.logo;
+        let rows='';if(includePromo)rows+=`<tr><td>Promotional Period</td><td>$${promo.toFixed(2)}</td></tr>`;
+        for(let y=1;y<=years;y++){const rate=y===1?price:price*Math.pow(1+growth,y-1);rows+=`<tr><td>Year ${y}</td><td>$${rate.toFixed(2)}</td></tr>`;}
+        const wrap=document.createElement('div');wrap.className='pricing-table-wrapper';wrap.innerHTML=`<h3>${plat} - ${tier}</h3><img src="${logo}" alt="Logo" style="max-height:40px;margin-bottom:0.5rem;"/><table><thead><tr><th>Period</th><th>Monthly Rate</th></tr></thead><tbody>${rows}</tbody></table>`;
+        pricingTablesContainer.appendChild(wrap);
+      });
+    }
+
+    function showModal(features){featureList.innerHTML='';features.forEach(f=>{const li=document.createElement('li');li.textContent=f;featureList.appendChild(li);});featureModal.style.display='flex';}
+    closeModalBtn.addEventListener('click',()=>featureModal.style.display='none');window.addEventListener('click',e=>{if(e.target===featureModal)featureModal.style.display='none';});
+
+    function updateProceed(){proceedBtn.disabled=!(selectedPlanIdxs.length>0&&agreeTerms.checked);}
+    promoToggle.addEventListener('change',()=>{promoInput.disabled=(promoToggle.value==='no'||selectedPlanIdxs.length===0);generateTables();updateProceed();});promoInput.addEventListener('input',()=>{generateTables();updateProceed();});numYears.addEventListener('change',()=>{generateTables();updateProceed();});growthRate.addEventListener('input',()=>{generateTables();updateProceed();});agreeTerms.addEventListener('change',updateProceed);
+
+    resetBtn.addEventListener('click',()=>{
+      sgSelect.selectedIndex=0;numSelect.disabled=true;numSelect.selectedIndex=0;slotsContainer.innerHTML='';cardsContainer.innerHTML='';resetPricing();
+    });
+
+    proceedBtn.addEventListener('click',()=>{window.location.href='payment.html';});
   </script>
 </body>
 </html>
-
-
