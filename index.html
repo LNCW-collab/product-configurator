@@ -1,158 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Lexis+ Product Configurator</title>
   <style>
-    /* -- Brand Colors -- */
-    :root {
-      --ln-red: #EE3124;
-      --ln-blue: #0052CC;
-      --ln-blue-dark: #003E99;
-      --ln-gray-light: #F2F2F2;
-      --ln-gray: #CCCCCC;
-      --ln-text: #333333;
-      --ln-text-light: #555555;
-    }
-    /* -- Base Styles -- */
-    body {
-      font-family: Arial, sans-serif;
-      background: #FFFFFF;
-      color: var(--ln-text);
-      max-width: 1000px;
-      margin: 0 auto;
-      padding: 1rem;
-      line-height: 1.5;
-    }
-    h1 {
-      color: var(--ln-red);
-      margin-bottom: 0.5rem;
-    }
-    /* -- Top Action Bar -- */
-    .top-actions {
-      display: flex;
-      justify-content: flex-end;
-      gap: 1rem;
-      margin-bottom: 1rem;
-    }
-    .button-primary, .button-secondary {
-      font-size: 0.95rem;
-      padding: 0.5rem 1rem;
-      border-radius: 4px;
-      cursor: pointer;
-      transition: background 0.2s;
-    }
-    .button-primary {
-      background: var(--ln-blue);
-      color: #fff;
-      border: none;
-    }
-    .button-primary:hover { background: var(--ln-blue-dark); }
-    .button-secondary {
-      background: transparent;
-      color: var(--ln-blue);
-      border: 2px solid var(--ln-blue);
-    }
-    .button-secondary:hover { background: var(--ln-blue); color: #fff; }
-    /* -- Controls Section -- */
-    .controls {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 1rem;
-      margin-bottom: 1.5rem;
-    }
-    .controls label {
-      font-weight: bold;
-      display: block;
-      margin-bottom: 0.25rem;
-    }
-    .controls select, .controls input {
-      width: 100%;
-      padding: 0.5rem;
-      font-size: 0.95rem;
-      border: 1px solid var(--ln-gray);
-      border-radius: 4px;
-      color: var(--ln-text);
-    }
-    /* -- Slots Section -- */
-    .slots {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 1rem;
-      margin-bottom: 2rem;
-    }
-    .slot {
-      background: var(--ln-gray-light);
-      border: 1px solid var(--ln-gray);
-      border-radius: 6px;
-      padding: 1rem;
-    }
-    /* -- Cards Grid -- */
-    .cards-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 1rem;
-      margin-bottom: 2rem;
-    }
-    .card {
-      background: #fff;
-      border: 2px solid var(--ln-red);
-      border-radius: 8px;
-      padding: 1rem;
-      position: relative;
-      transition: transform 0.2s, box-shadow 0.2s;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-    }
-    .card.selected {
-      border-color: var(--ln-blue);
-      box-shadow: 0 2px 8px rgba(0,82,204,0.4);
-      transform: translateY(-4px);
-    }
-    .card img { max-height: 50px; margin: 0 auto 0.75rem; }
-    .card h2 { font-size: 1.1rem; text-align: center; margin: 0.5rem 0; color: var(--ln-text); }
-    .card p { font-size: 0.9rem; text-align: center; color: var(--ln-text-light); margin: 0.25rem 0; flex-grow: 1; }
-    .card-footer { margin-top: 1rem; display: flex; flex-direction: column; gap: 0.5rem; }
-    .card-footer button {
-      background: var(--ln-blue);
-      color: #fff;
-      border: none;
-      border-radius: 4px;
-      padding: 0.5rem;
-      font-size: 0.9rem;
-      cursor: pointer;
-      transition: background 0.2s;
-    }
-    .card-footer button:hover { background: var(--ln-blue-dark); }
-    .remove-btn {
-      position: absolute;
-      top: 8px;
-      right: 8px;
-      background: none;
-      border: none;
-      color: var(--ln-red);
-      font-size: 16px;
-      width: 20px;
-      height: 20px;
-      line-height: 20px;
-      text-align: center;
-      cursor: pointer;
-    }
-    .remove-btn:hover { color: #CC0000; }
-    /* -- Pricing Section -- */
-    #pricingSection { display: none; background: var(--ln-gray-light); border-top: 3px solid var(--ln-red); border-radius: 6px; padding: 1.5rem; }
-    #pricingSection h2 { color: var(--ln-red); margin-top: 0; }
-    .pricing-tables { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1rem; margin-top: 1rem; }
-    .pricing-table-wrapper { background: #fff; border: 1px solid var(--ln-gray); border-radius: 6px; padding: 1rem; }
-    .pricing-table-wrapper h3 { font-size: 1rem; text-align: center; margin: 0.5rem 0; color: var(--ln-text); }
-    .pricing-table-wrapper img { max-height: 40px; display: block; margin: 0 auto 0.5rem; }
-    .pricing-table-wrapper table { width: 100%; border-collapse: collapse; }
-    .pricing-table-wrapper th, .pricing-table-wrapper td { border: 1px solid var(--ln-gray); padding: 0.5rem; text-align: center; font-size: 0.9rem; }
-    /* -- Click-wrap & Footer -- */
-    #agreeTerms { margin-right: 0.5rem; }
-    .footer-buttons { display: flex; flex-wrap: wrap; gap: 1rem; justify-content: flex-end; margin-top: 2rem; }
+    /* include all your existing CSS here from above */
+    /* … */
   </style>
 </head>
 <body>
@@ -165,24 +19,32 @@
   <div class="controls">
     <div>
       <label for="stateSelect">Jurisdiction (State)</label>
-      <select id="stateSelect"><option disabled selected>— Select State —</option></select>
+      <select id="stateSelect">
+        <option disabled selected>— Select State —</option>
+      </select>
     </div>
     <div>
       <label for="numPlans">Number of Plans</label>
-      <select id="numPlans" disabled><option disabled selected>— Select —</option><option>1</option><option>2</option><option>3</option></select>
+      <select id="numPlans" disabled>
+        <option disabled selected>— Select —</option>
+        <option>1</option>
+        <option>2</option>
+        <option>3</option>
+      </select>
     </div>
   </div>
 
-  <div class="slots" id="slotsContainer"></div>
-
-  <div class="cards-grid" id="cards"></div>
-
+  <div class="slots"           id="slotsContainer"></div>
+  <div class="cards-grid"      id="cards"></div>
   <div id="pricingSection">
     <h2>Pricing Table</h2>
     <div class="controls">
       <div>
         <label for="promoToggle">Include Promotional Period?</label>
-        <select id="promoToggle"><option value="no" selected>No</option><option value="yes">Yes</option></select>
+        <select id="promoToggle">
+          <option value="no" selected>No</option>
+          <option value="yes">Yes</option>
+        </select>
       </div>
       <div>
         <label for="promoPrice">Promo Monthly Rate</label>
@@ -190,7 +52,12 @@
       </div>
       <div>
         <label for="numYears">Number of Years</label>
-        <select id="numYears"><option>1</option><option>2</option><option>3</option><option>4</option></select>
+        <select id="numYears">
+          <option>1</option>
+          <option>2</option>
+          <option>3</option>
+          <option>4</option>
+        </select>
       </div>
       <div>
         <label for="growthRate">Outyear Growth (%)</label>
@@ -214,30 +81,26 @@
   </div>
 
   <div class="footer-buttons">
-    <button class="button-primary print-button" onclick="window.print()">Download PDF</button>
-    <button class="button-primary" id="proceedBtn" disabled>Proceed to Payment</button>
+    <button class="button-primary print-button" onclick="window.print()">
+      Download PDF
+    </button>
+    <button class="button-primary" id="proceedBtn" disabled>
+      Proceed to Payment
+    </button>
   </div>
 
-  <div id="featureModal"><div class="modal-content"><h3>Plan Features</h3><ul id="featureList"></ul><button class="close">Close</button></div></div>
+  <!-- Feature Modal -->
+  <div id="featureModal">
+    <div class="modal-content">
+      <h3>Plan Features</h3>
+      <ul id="featureList"></ul>
+      <button class="close">Close</button>
+    </div>
+  </div>
 
-  <script>
-    const stateToGroup={AL:'Group A',AZ:'Group A',CA:'Group A',CO:'Group A',CT:'Group A',FL:'Group A',GA:'Group A',IL:'Group A',IN:'Group A',LA:'Group A',MA:'Group A',MD:'Group A',MI:'Group A',MN:'Group A',MO:'Group A',NJ:'Group A',NV:'Group A',NY:'Group A',OH:'Group A',OR:'Group A',PA:'Group A',SC:'Group A',TN:'Group A',TX:'Group A',VA:'Group A',WA:'Group A',WI:'Group A',AR:'Group B',DE:'Group B',HI:'Group B',IA:'Group B',ID:'Group B',KS:'Group B',KY:'Group B',ME:'Group B',MS:'Group B',NC:'Group B',NE:'Group B',NH:'Group B',OK:'Group B',RI:'Group B',UT:'Group B',WV:'Group B',AK:'Group C',ND:'Group C',NM:'Group C',SD:'Group C',MT:'Group C',WY:'Group C'};
-    const tierMapping={'Group A':['State Essential','State Enhanced','State Professional','Premier'],'Group B':['State Essential','State Enhanced','State Professional','Premier'],'Group C':['State Essential','State Enhanced','State Professional','Premier']};
-    const featuresByTier={ 'State Essential':{features:['State Cases: broad state-specific case law','State Statutes & Legislation: real-time updates','State Briefs, Pleadings & Motions','Verdicts & Settlements: largest collection','State Jury Instructions','Shepard’s Citations Service'],logo:'LexisPlus.png'}, 'State Enhanced':{features:['All State Essential features','State Agency & Admin Materials','Federal Cases: widest federal case law','Federal Legislative Materials: congressional acts & bills','Automated Templates: State Automated Templates','Matthew Bender: State edition','Practical Guidance: All Forms & Practical Guidance'],logo:'LexisPlus.png'}, 'State Professional':{features:['All State Enhanced features','Federal Agency & Admin Materials','CourtLink: court dockets & documents','News: Law360 daily coverage','Verdicts & Settlements','Jury Instructions: All Jury Instructions'],logo:'LexisPlus.png'}, 'Premier':{features:['All State Professional features','AI Summaries: advanced AI insights','Advanced Research Tools'],logo:'LexisPlus.png'} };
-    const sgSelect=document.getElementById('stateSelect'), numSelect=document.getElementById('numPlans'), slotsContainer=document.getElementById('slotsContainer'), cardsContainer=document.getElementById('cards'), promoToggle=document.getElementById('promoToggle'), promoInput=document.getElementById('promoPrice'), numYears=document.getElementById('numYears'), growthRate=document.getElementById('growthRate'), pricingSection=document.getElementById('pricingSection'), pricingTablesContainer=document.getElementById('pricingTablesContainer'), skuInput=document.getElementById('skuInput'), agreeTerms=document.getElementById('agreeTerms'), proceedBtn=document.getElementById('proceedBtn'), resetBtn=document.getElementById('resetBtn'), featureModal=document.getElementById('featureModal'), featureList=document.getElementById('featureList'), closeModalBtn=featureModal.querySelector('.close');
-    let selectedPlanIdxs=[], selectedGroup=null;
-    Object.keys(stateToGroup).forEach(st=>sgSelect.add(new Option(st,st)));
-    sgSelect.addEventListener('change',()=>{selectedGroup=stateToGroup[sgSelect.value];numSelect.disabled=false;numSelect.selectedIndex=0;cardsContainer.innerHTML='';resetPricing();});
-    numSelect.addEventListener('change',()=>{slotsContainer.innerHTML='';for(let i=1;i<=+numSelect.value;i++)renderSlot(i);setupSlotLogic();cardsContainer.innerHTML='';resetPricing();});
-    function renderSlot(i){const d=document.createElement('div');d.className='slot';d.id='slot'+i;d.innerHTML=`<label>Platform</label><select id="platform${i}"><option disabled selected>— Select —</option><option>Lexis+</option><option>Protégé</option></select><label>Category</label><select id="tier${i}" disabled><option disabled selected>— Select —</option></select><label>Monthly Rate</label><input type="number" id="price${i}" placeholder="0.00" disabled/>`;slotsContainer.appendChild(d);}    function setupSlotLogic(){selectedPlanIdxs=[];resetPricing();const slots=[...slotsContainer.children].map(d=>({plat:d.querySelector('select[id^=platform]'),tier:d.querySelector('select[id^=tier]'),price:d.querySelector('input[id^=price]'),idx:[...slotsContainer.children].indexOf(d)}));slots.forEach(s=>{s.plat.disabled=false;s.plat.addEventListener('change',()=>{s.tier.disabled=false;s.tier.innerHTML='<option disabled selected>— Select —</option>';tierMapping[selectedGroup].forEach(t=>s.tier.add(new Option(t,t)));s.price.disabled=true;updateCards();resetPricing();});s.tier.addEventListener('change',()=>{s.price.disabled=false;updateCards();resetPricing();});s.price.addEventListener('input',()=>{updateCards();resetPricing();});});}
-    function updateCards(){cardsContainer.innerHTML='';selectedPlanIdxs=[];resetPricing();[...slotsContainer.children].forEach((d,i)=>{const p=d.querySelector('select[id^=platform]').value,t=d.querySelector('select[id^=tier]').value,r=d.querySelector('input[id^=price]').value;if(p&&t){const data=featuresByTier[t],logo=(p==='Protégé')?'Protege.png':data.logo;const c=document.createElement('div');c.className='card';c.dataset.slot=i;c.innerHTML=`<button class="remove-btn" data-slot="${i}">&times;</button><img src="${logo}" alt="Logo"/><h2>${p} - ${t}</h2><p><strong>Monthly Rate:</strong> $${r}</p><p><strong>Features:</strong> ${data.features.join('; ')}</p><div class="card-footer"><button data-slot="${i}" class="pricing-btn">Show Pricing Table</button><button data-slot="${i}" class="details-btn">View Full Features</button></div>`;cardsContainer.appendChild(c);}});document.querySelectorAll('.remove-btn').forEach(b=>b.addEventListener('click',()=>{const i=+b.dataset.slot,sd=slotsContainer.children[i];sd.querySelector('select[id^=platform]').value='';const ts=sd.querySelector('select[id^=tier]');ts.innerHTML='<option disabled selected>— Select —</option>';ts.disabled=true;const pi=sd.querySelector('input[id^=price]');pi.value='';pi.disabled=true;updateCards();resetPricing();}));document.querySelectorAll('.pricing-btn').forEach(b=>b.addEventListener('click',()=>{const i=+b.dataset.slot,card=b.closest('.card');if(selectedPlanIdxs.includes(i)){selectedPlanIdxs=selectedPlanIdxs.filter(x=>x!==i);card.classList.remove('selected')}else{selectedPlanIdxs.push(i);card.classList.add('selected')}promoInput.disabled=(promoToggle.value==='no'||selectedPlanIdxs.length===0);generateTables();updateProceed();}));document.querySelectorAll('.details-btn').forEach(b=>b.addEventListener('click',()=>{const i=+b.dataset.slot,tier=slotsContainer.children[i].querySelector('select[id^=tier]').value;showModal(featuresByTier[tier].features);}));}
-    function resetPricing(){pricingSection.style.display='none';promoToggle.value='no';promoInput.disabled=true;promoInput.value='';numYears.value='1';growthRate.value='3';pricingTablesContainer.innerHTML='';selectedPlanIdxs=[];skuInput.value='';agreeTerms.checked=false;proceedBtn.disabled=true;document.querySelectorAll('.card').forEach(c=>c.classList.remove('selected'));}
-    function generateTables(){if(selectedPlanIdxs.length===0){pricingSection.style.display='none';pricingTablesContainer.innerHTML='';return;}pricingSection.style.display='block';pricingTablesContainer.innerHTML='';const ip=promoToggle.value==='yes',pr=ip?+promoInput.value:0,yrs=+numYears.value,gr=+growthRate.value/100;selectedPlanIdxs.forEach(i=>{const d=slotsContainer.children[i],p=d.querySelector('select[id^=platform]').value,t=d.querySelector('select[id^=tier]').value,v=+d.querySelector('input[id^=price]').value,data=featuresByTier[t],logo=(p==='Protégé')?'Protege.png':data.logo;let rows='';if(ip)rows+=`<tr><td>Promotional Period</td><td>$${pr.toFixed(2)}</td></tr>`;for(let y=1;y<=yrs;y++){const rate=y===1?v:v*Math.pow(1+gr,y-1);rows+=`<tr><td>Year ${y}</td><td>$${rate.toFixed(2)}</td></tr>`;}const w=document.createElement('div');w.className='pricing-table-wrapper';w.innerHTML=`<h3>${p} - ${t}</h3><img src="${logo}" alt="Logo" style="max-height:40px;margin-bottom:0.5rem;"/><table><thead><tr><th>Period</th><th>Monthly Rate</th></tr></thead><tbody>${rows}</tbody></table>`;pricingTablesContainer.appendChild(w);});}
-    function showModal(f){featureList.innerHTML='';f.forEach(x=>{const li=document.createElement('li');li.textContent=x;featureList.appendChild(li);});featureModal.style.display='flex';}
-    closeModalBtn.addEventListener('click',()=>featureModal.style.display='none');window.addEventListener('click',e=>{if(e.target===featureModal)featureModal.style.display='none';});
-    function updateProceed(){proceedBtn.disabled=!(selectedPlanIdxs.length>0&&agreeTerms.checked);}promoToggle.addEventListener('change',()=>{promoInput.disabled=(promoToggle.value==='no'||selectedPlanIdxs.length===0);generateTables();updateProceed();});promoInput.addEventListener('input',()=>{generateTables();updateProceed();});numYears.addEventListener('change',()=>{generateTables();updateProceed();});growthRate.addEventListener('input',()=>{generateTables();updateProceed();});agreeTerms.addEventListener('change',updateProceed);
-    resetBtn.addEventListener('click',()=>{sgSelect.selectedIndex=0;numSelect.disabled=true;numSelect.selectedIndex=0;slotsContainer.innerHTML='';cardsContainer.innerHTML='';resetPricing();});
-    proceedBtn.addEventListener('click',()=>{window.location.href='payment.html';});
-  </script>
+  <!-- Load modules -->
+  <script type="module" src="firebase.js"></script>
+  <script type="module" src="app.js"></script>
 </body>
 </html>
+
