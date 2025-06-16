@@ -62,31 +62,7 @@
     #featureModal button.close { background: #CCC; border: none; border-radius: 4px; padding: 0.4rem 0.8rem; cursor: pointer; }
   </style>
 </head>
-<body>
-<!-- Quill stylesheet -->
-<link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet"/>
-<!-- Quill editor container -->
-<div id="editor-container" style="height: 300px; margin-top: 20px;"></div>
-<button id="save-button" style="margin-top: 10px;">Save Content</button>
-<!-- Quill library -->
-<script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
-<script>
-  document.addEventListener("DOMContentLoaded", function () {
-    var quill = new Quill('#editor-container', {
-      theme: 'snow'
-    });
-
-    const saveButton = document.getElementById('save-button');
-    if (saveButton) {
-      saveButton.addEventListener('click', function () {
-        const content = quill.root.innerHTML;
-        console.log("Editor content:", content);
-        alert("Editor content logged to console.");
-      });
-    }
-  });
-</script>
-
+<body><button id="download-pdf" style="margin-top: 20px;">Download PDF</button><div id="export-content">
 <h1>Lexis+ Product Configurator Comparison</h1>
 <!-- State & Plans -->
 <div class="controls">
@@ -125,7 +101,10 @@
 </div>
 <!-- Feature Modal -->
 <div id="featureModal"><div class="modal-content"><h3>Plan Features</h3><ul id="featureList"></ul><button class="close">Close</button></div></div>
-<script>
+
+<div id="editor-container" style="height: 300px; margin-top: 20px;"></div>
+<button id="save-button">Save Content</button>
+</div><script>
     // State → Group
     const stateToGroup = {AL:'Group A',AZ:'Group A',CA:'Group A',CO:'Group A',CT:'Group A',FL:'Group A',GA:'Group A',IL:'Group A',IN:'Group A',LA:'Group A',MA:'Group A',MD:'Group A',MI:'Group A',MN:'Group A',MO:'Group A',NJ:'Group A',NV:'Group A',NY:'Group A',OH:'Group A',OR:'Group A',PA:'Group A',SC:'Group A',TN:'Group A',TX:'Group A',VA:'Group A',WA:'Group A',WI:'Group A',AR:'Group B',DE:'Group B',HI:'Group B',IA:'Group B',ID:'Group B',KS:'Group B',KY:'Group B',ME:'Group B',MS:'Group B',NC:'Group B',NE:'Group B',NH:'Group B',OK:'Group B',RI:'Group B',UT:'Group B',WV:'Group B',AK:'Group C',ND:'Group C',NM:'Group C',SD:'Group C',MT:'Group C',WY:'Group C'};
     const tierMapping = {'Group A':['State Essential','State Enhanced','State Professional','Premier'],'Group B':['State Essential','State Enhanced','State Professional','Premier'],'Group C':['State Essential','State Enhanced','State Professional','Premier']};
@@ -280,8 +259,12 @@
     });
 
     proceedBtn.addEventListener('click',()=>{window.location.href='payment.html';});
-  </script>
-<div id="editor-container" style="height: 300px; margin-top: 20px;"></div>
-<button id="save-button">Save Content</button>
-</body>
+  </script><script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script><script>
+document.addEventListener("DOMContentLoaded", function () {
+  document.getElementById("download-pdf").addEventListener("click", function () {
+    const element = document.getElementById("export-content");
+    html2pdf().from(element).save("document.pdf");
+  });
+});
+</script></body>
 </html>
