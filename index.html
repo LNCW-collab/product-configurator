@@ -61,8 +61,37 @@
     #featureModal ul { padding-left: 1.2rem; color: #333; }
     #featureModal button.close { background: #CCC; border: none; border-radius: 4px; padding: 0.4rem 0.8rem; cursor: pointer; }
   </style>
-</head>
-<body><button id="download-pdf" style="margin-top: 20px;">Download PDF</button><div id="export-content">
+<style>
+body {
+    font-family: 'Segoe UI', sans-serif;
+    background-color: #f9f9f9;
+    margin: 0;
+    padding: 20px;
+}
+.container {
+    max-width: 1200px;
+    margin: auto;
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+button {
+    background-color: #0078D4;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+button:hover {
+    background-color: #005A9E;
+}
+#editor-container {
+    margin-bottom: 20px;
+}
+</style></head>
+<body><div id="editor-container" style="height: 300px; margin-top: 20px;"></div><button id="download-pdf" style="margin-top: 20px;">Download PDF</button><div id="export-content">
 <h1>Lexis+ Product Configurator Comparison</h1>
 <!-- State & Plans -->
 <div class="controls">
@@ -95,13 +124,13 @@
 <div class="controls"><input id="agreeTerms" type="checkbox"/><label for="agreeTerms">I agree to the Terms &amp; Conditions for this quote</label></div>
 <!-- Footer Buttons -->
 <div class="footer-buttons">
-<button class="button-primary print-button" onclick="window.print()">Download PDF</button>
+
 <button class="button-primary reset-button" id="resetBtn">Reset</button>
 <button class="button-primary" disabled="" id="proceedBtn">Proceed to Payment</button>
 </div>
 <!-- Feature Modal -->
 <div id="featureModal"><div class="modal-content"><h3>Plan Features</h3><ul id="featureList"></ul><button class="close">Close</button></div></div>
-<div id="editor-container" style="height: 300px; margin-top: 20px;"></div>
+
 <button id="save-button">Save Content</button>
 </div><script>
     // State → Group
@@ -265,105 +294,5 @@ document.addEventListener("DOMContentLoaded", function () {
     html2pdf().from(element).save("document.pdf");
   });
 });
-</script>
-<script>
-document.addEventListener("DOMContentLoaded", function () {
-  const STORAGE_KEY = "qwilrCloneProgress";
-
-  function saveProgress() {
-    const state = document.getElementById("stateSelect").value;
-    const numPlans = document.getElementById("numPlans").value;
-    const slots = [...document.querySelectorAll(".slot")].map(slot => ({
-      platform: slot.querySelector("select[id^=platform]").value,
-      tier: slot.querySelector("select[id^=tier]").value,
-      price: slot.querySelector("input[id^=price]").value
-    }));
-    const promoToggle = document.getElementById("promoToggle").value;
-    const promoPrice = document.getElementById("promoPrice").value;
-    const numYears = document.getElementById("numYears").value;
-    const growthRate = document.getElementById("growthRate").value;
-    const skuInput = document.getElementById("skuInput").value;
-    const editorContent = window.quill ? window.quill.root.innerHTML : "";
-
-    const data = {
-      state,
-      numPlans,
-      slots,
-      promoToggle,
-      promoPrice,
-      numYears,
-      growthRate,
-      skuInput,
-      editorContent
-    };
-
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-  }
-
-  function loadProgress() {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if (!saved) return;
-    const data = JSON.parse(saved);
-
-    const stateSelect = document.getElementById("stateSelect");
-    const numPlansSelect = document.getElementById("numPlans");
-
-    if (data.state) {
-      stateSelect.value = data.state;
-      stateSelect.dispatchEvent(new Event("change"));
-    }
-
-    setTimeout(() => {
-      if (data.numPlans) {
-        numPlansSelect.value = data.numPlans;
-        numPlansSelect.dispatchEvent(new Event("change"));
-      }
-
-      setTimeout(() => {
-        data.slots.forEach((slotData, i) => {
-          const slot = document.getElementById(`slot${i + 1}`);
-          if (!slot) return;
-          const platform = slot.querySelector("select[id^=platform]");
-          const tier = slot.querySelector("select[id^=tier]");
-          const price = slot.querySelector("input[id^=price]");
-
-          platform.value = slotData.platform;
-          platform.dispatchEvent(new Event("change"));
-
-          // Wait for tier options to populate
-          setTimeout(() => {
-            if ([...tier.options].some(opt => opt.value === slotData.tier)) {
-              tier.value = slotData.tier;
-              tier.dispatchEvent(new Event("change"));
-            }
-
-            setTimeout(() => {
-              price.value = slotData.price;
-              price.dispatchEvent(new Event("input"));
-            }, 100);
-          }, 300);
-        });
-
-        document.getElementById("promoToggle").value = data.promoToggle;
-        document.getElementById("promoPrice").value = data.promoPrice;
-        document.getElementById("numYears").value = data.numYears;
-        document.getElementById("growthRate").value = data.growthRate;
-        document.getElementById("skuInput").value = data.skuInput;
-
-        if (window.quill && data.editorContent) {
-          window.quill.root.innerHTML = data.editorContent;
-        }
-
-        document.getElementById("promoToggle").dispatchEvent(new Event("change"));
-      }, 400);
-    }, 300);
-  }
-
-  document.body.addEventListener("input", saveProgress);
-  document.body.addEventListener("change", saveProgress);
-
-  loadProgress();
-});
-</script>
-</body>
+</script></body>
 </html>
