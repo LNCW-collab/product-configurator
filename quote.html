@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>View Your Lexis+ Quote</title>
+  <style>
+    /* Copy over the same CSS from index.html for cards/pricing/modal... */
+    /* You can remove interactive bits like .card-footer button styles */
+    /* ... */
+  </style>
+</head>
+<body>
+  <h1>Your Lexis+ Quote</h1>
+
+  <!-- Read-only variants of the controls aren’t needed; we just show cards + pricing -->
+  <div class="cards-grid" id="cards"></div>
+
+  <div id="pricingSection">
+    <h2>Pricing Details</h2>
+    <div class="pricing-tables" id="pricingTablesContainer"></div>
+  </div>
+
+  <!-- Click-wrap acceptance -->
+  <div class="controls" style="margin-top:2rem;">
+    <input type="checkbox" id="acceptQuote" />
+    <label for="acceptQuote">I accept this quote and agree to the Terms & Conditions</label>
+  </div>
+  <button class="button-primary" id="checkoutBtn" disabled>Proceed to Payment</button>
+
+  <!-- Feature modal (optional) -->
+  <div id="featureModal">
+    <div class="modal-content">
+      <h3>Plan Features</h3>
+      <ul id="featureList"></ul>
+      <button class="close">Close</button>
+    </div>
+  </div>
+
+  <!-- Modules -->
+  <script type="module" src="firebase.js"></script>
+  <script type="module" src="quote.js"></script>
+</body>
+</html>
