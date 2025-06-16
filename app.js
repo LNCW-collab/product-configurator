@@ -17,10 +17,11 @@ const stateToGroup = {
   WY:'Group C'
 };
 const tierMapping = {
-  'Group A':['State Essential','State Enhanced','State Professional','Premier'],
-  'Group B':['State Essential','State Enhanced','State Professional','Premier'],
-  'Group C':['State Essential','State Enhanced','State Professional','Premier']
+  "Group A": ["State Essential", "State Enhanced", "State Professional", "Premier"],
+  "Group B": ["State Essential", "State Enhanced", "State Professional", "Premier"],
+  "Group C": ["State Essential", "State Enhanced", "State Professional", "Premier"]
 };
+
 const featuresByTier = {
   'State Essential': {
     features: [
@@ -164,11 +165,23 @@ function updateCards() {
     const tier  = div.querySelector('[id^=tier]').value;
     const rate  = div.querySelector('input[id^=price]').value;
     if (plat && tier) {
-      const data = featuresByTier[tier];
-      if (!data) {
-  console.warn("Unknown tier, skipping card:", tier);
-  return;
+    // Trim whitespace just in case
+const normalizedTier = tier && tier.trim();
+
+// Debug: what tier strings are coming through?
+console.log("🔍 updateCards got tier:", JSON.stringify(normalizedTier));
+
+// Look it up
+const data = featuresByTier[normalizedTier];
+
+if (!data) {
+  console.warn(
+    `⚠️  No featuresByTier entry for tier=${JSON.stringify(normalizedTier)}. ` +
+    `Available: ${Object.keys(featuresByTier).join(", ")}`
+  );
+  return;  // skip rendering this card until we correct the mismatch
 }
+
       const logo = plat === 'Protégé' ? 'Protege.png' : data.logo;
         console.log("rendering card for tier:", tier, " available tiers:", Object.keys(featuresByTier));
 
