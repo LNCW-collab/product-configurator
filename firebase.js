@@ -11,12 +11,13 @@ import {
 
 // 1) Paste your Firebase Web config here
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "your-app.firebaseapp.com",
-  projectId: "your-app",
-  // ...etc
+  apiKey: "AIzaSyB87-rBZOibNVD5Y_2FPIQWf98A7m-X09U",
+  authDomain: "product-configurator-ff689.firebaseapp.com",
+  projectId: "product-configurator-ff689",
+  storageBucket: "product-configurator-ff689.firebasestorage.app",
+  messagingSenderId: "513805449458",
+  appId: "1:513805449458:web:834ce115ab7971ec2b786b"
 };
-
 // 2) Initialize Firebase & Firestore
 const app = initializeApp(firebaseConfig);
 const db  = getFirestore(app);

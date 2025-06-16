@@ -165,7 +165,12 @@ function updateCards() {
     const rate  = div.querySelector('input[id^=price]').value;
     if (plat && tier) {
       const data = featuresByTier[tier];
+      if (!data) {
+  console.warn("Unknown tier, skipping card:", tier);
+  return;
+}
       const logo = plat === 'Protégé' ? 'Protege.png' : data.logo;
+        console.log("rendering card for tier:", tier, " available tiers:", Object.keys(featuresByTier));
 
       const c = document.createElement('div');
       c.className = 'card';
