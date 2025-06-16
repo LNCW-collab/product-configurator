@@ -161,92 +161,30 @@ function updateCards() {
   resetAll();
 
   Array.from(slotsCnt.children).forEach((div, i) => {
-    const plat  = div.querySelector('[id^=platform]').value;
-    const tier  = div.querySelector('[id^=tier]').value;
-    const rate  = div.querySelector('input[id^=price]').value;
-    if (plat && tier) {
-    // Trim whitespace just in case
-const normalizedTier = tier && tier.trim();
+    const rawTier = div.querySelector('[id^=tier]').value;
+    const tier    = rawTier.trim();                     // <— trim whitespace
+    const plat    = div.querySelector('[id^=platform]').value;
+    const rate    = div.querySelector('input[id^=price]').value;
 
-// Debug: what tier strings are coming through?
-console.log("🔍 updateCards got tier:", JSON.stringify(normalizedTier));
+    if (!plat || !tier) return;                        // skip if nothing selected
 
-// Look it up
-const data = featuresByTier[normalizedTier];
+    console.log('rendering card for tier:', JSON.stringify(tier));
 
-if (!data) {
-  console.warn(
-    `⚠️  No featuresByTier entry for tier=${JSON.stringify(normalizedTier)}. ` +
-    `Available: ${Object.keys(featuresByTier).join(", ")}`
-  );
-  return;  // skip rendering this card until we correct the mismatch
-}
-
-      const logo = plat === 'Protégé' ? 'Protege.png' : data.logo;
-        console.log("rendering card for tier:", tier, " available tiers:", Object.keys(featuresByTier));
-
-      const c = document.createElement('div');
-      c.className = 'card';
-      c.dataset.slot = i;
-      c.innerHTML = `
-        <button class="remove-btn" data-slot="${i}">&times;</button>
-        <img src="${logo}" alt="Logo" />
-        <h2>${plat} – ${tier}</h2>
-        <p><strong>Monthly Rate:</strong> $${rate}</p>
-        <p><strong>Features:</strong> ${data.features.join('; ')}</p>
-        <div class="card-footer">
-          <button data-slot="${i}" class="pricing-btn">Show Pricing Table</button>
-          <button data-slot="${i}" class="details-btn">View Full Features</button>
-        </div>
-      `;
-      cardsCnt.appendChild(c);
+    const data = featuresByTier[tier];
+    if (!data) {
+      console.warn(
+        `⚠️ No featuresByTier entry for "${tier}". ` +
+        `Valid tiers: ${Object.keys(featuresByTier).join(', ')}`
+      );
+      return;
     }
+
+    // …now use `tier` and `data.logo` safely
+    const logo = plat === 'Protégé' ? 'Protege.png' : data.logo;
+    // …build your card…
   });
-
-  // Remove slot
-  document.querySelectorAll('.remove-btn').forEach(btn =>
-    btn.addEventListener('click', () => {
-      const i = +btn.dataset.slot;
-      const sd = slotsCnt.children[i];
-      sd.querySelector('[id^=platform]').value = '';
-      const ts = sd.querySelector('[id^=tier]');
-      ts.innerHTML = '<option disabled selected>— Select —</option>';
-      ts.disabled = true;
-      const pi = sd.querySelector('input[id^=price]');
-      pi.value = '';
-      pi.disabled = true;
-      updateCards();
-      resetAll();
-    }))
-  ;
-
-  // Toggle pricing tables
-  document.querySelectorAll('.pricing-btn').forEach(btn =>
-    btn.addEventListener('click', () => {
-      const i    = +btn.dataset.slot;
-      const card = btn.closest('.card');
-      if (selectedPlans.includes(i)) {
-        selectedPlans = selectedPlans.filter(x => x !== i);
-        card.classList.remove('selected');
-      } else {
-        selectedPlans.push(i);
-        card.classList.add('selected');
-      }
-      promoInp.disabled = promoTog.value === 'no' || selectedPlans.length === 0;
-      generateTables();
-      updateProceed();
-    }))
-  ;
-
-  // Show feature modal
-  document.querySelectorAll('.details-btn').forEach(btn =>
-    btn.addEventListener('click', () => {
-      const i    = +btn.dataset.slot;
-      const tier = slotsCnt.children[i].querySelector('[id^=tier]').value;
-      showModal(featuresByTier[tier].features);
-    }))
-  ;
 }
+
 
 function resetAll() {
   priceSec.style.display = 'none';

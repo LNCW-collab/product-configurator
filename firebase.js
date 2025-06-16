@@ -10,6 +10,12 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore.js";
 
 // 1) Paste your Firebase Web config here
+// Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
+// Your web app's Firebase configuration
 const firebaseConfig = {
   apiKey: "AIzaSyB87-rBZOibNVD5Y_2FPIQWf98A7m-X09U",
   authDomain: "product-configurator-ff689.firebaseapp.com",
@@ -18,6 +24,9 @@ const firebaseConfig = {
   messagingSenderId: "513805449458",
   appId: "1:513805449458:web:834ce115ab7971ec2b786b"
 };
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
 // 2) Initialize Firebase & Firestore
 const app = initializeApp(firebaseConfig);
 const db  = getFirestore(app);
