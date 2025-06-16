@@ -1,16 +1,15 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <!-- Quill stylesheet -->
-  <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
-
-  <!-- Quill library -->
-  <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
-
-  <title>Product Configurator Comparison</title>
-  <style>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<!-- Quill stylesheet -->
+<link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet"/>
+<!-- Quill library -->
+<script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+<title>Product Configurator Comparison</title>
+<style>
     /* Typography & Base */
     body { font-family: Arial, sans-serif; background: #FFFFFF; color: #333; max-width: 960px; margin: 2rem auto; line-height: 1.5; }
     h1 { color: #EE3124; margin-bottom: 1rem; }
@@ -64,53 +63,45 @@
   </style>
 </head>
 <body>
-  <h1>Lexis+ Product Configurator Comparison</h1>
-
-  <!-- State & Plans -->
-  <div class="controls">
-    <div style="flex:1 1 200px;">
-      <label for="stateSelect">Jurisdiction (State)</label>
-      <select id="stateSelect"><option disabled selected>— Select State —</option></select>
-    </div>
-    <div style="flex:1 1 200px;">
-      <label for="numPlans">Number of Plans</label>
-      <select id="numPlans" disabled><option disabled selected>— Select —</option><option>1</option><option>2</option><option>3</option></select>
-    </div>
-  </div>
-
-  <!-- Slots -->
-  <div class="slots controls" id="slotsContainer"></div>
-
-  <!-- Cards -->
-  <div class="cards-grid" id="cards"></div>
-
-  <!-- Pricing Table Section -->
-  <div id="pricingSection">
-    <h2>Pricing Table</h2>
-    <div class="controls">
-      <div style="flex:1 1 200px;"><label for="promoToggle">Include Promotional Period?</label><select id="promoToggle"><option value="no" selected>No</option><option value="yes">Yes</option></select></div>
-      <div style="flex:1 1 200px;"><label for="promoPrice">Promo Monthly Rate</label><input type="number" id="promoPrice" placeholder="0.00" disabled /></div>
-      <div style="flex:1 1 200px;"><label for="numYears">Number of Years</label><select id="numYears"><option>1</option><option>2</option><option>3</option><option>4</option></select></div>
-      <div style="flex:1 1 200px;"><label for="growthRate">Outyear Growth (%)</label><input type="number" id="growthRate" value="3" step="0.1" /></div>
-    </div>
-    <div class="pricing-tables" id="pricingTablesContainer"></div>
-    <div class="controls"><div style="flex:1 1 100%;"><label for="skuInput">Additional SKUs (up to 10)</label><textarea id="skuInput" placeholder="Enter SKUs, one per line"></textarea></div></div>
-  </div>
-
-  <!-- Click-wrap Terms -->
-  <div class="controls"><input type="checkbox" id="agreeTerms" /><label for="agreeTerms">I agree to the Terms & Conditions for this quote</label></div>
-
-  <!-- Footer Buttons -->
-  <div class="footer-buttons">
-    <button class="button-primary print-button" onclick="window.print()">Download PDF</button>
-    <button class="button-primary reset-button" id="resetBtn">Reset</button>
-    <button class="button-primary" id="proceedBtn" disabled>Proceed to Payment</button>
-  </div>
-
-  <!-- Feature Modal -->
-  <div id="featureModal"><div class="modal-content"><h3>Plan Features</h3><ul id="featureList"></ul><button class="close">Close</button></div></div>
-
-  <script>
+<h1>Lexis+ Product Configurator Comparison</h1>
+<!-- State & Plans -->
+<div class="controls">
+<div style="flex:1 1 200px;">
+<label for="stateSelect">Jurisdiction (State)</label>
+<select id="stateSelect"><option disabled="" selected="">— Select State —</option></select>
+</div>
+<div style="flex:1 1 200px;">
+<label for="numPlans">Number of Plans</label>
+<select disabled="" id="numPlans"><option disabled="" selected="">— Select —</option><option>1</option><option>2</option><option>3</option></select>
+</div>
+</div>
+<!-- Slots -->
+<div class="slots controls" id="slotsContainer"></div>
+<!-- Cards -->
+<div class="cards-grid" id="cards"></div>
+<!-- Pricing Table Section -->
+<div id="pricingSection">
+<h2>Pricing Table</h2>
+<div class="controls">
+<div style="flex:1 1 200px;"><label for="promoToggle">Include Promotional Period?</label><select id="promoToggle"><option selected="" value="no">No</option><option value="yes">Yes</option></select></div>
+<div style="flex:1 1 200px;"><label for="promoPrice">Promo Monthly Rate</label><input disabled="" id="promoPrice" placeholder="0.00" type="number"/></div>
+<div style="flex:1 1 200px;"><label for="numYears">Number of Years</label><select id="numYears"><option>1</option><option>2</option><option>3</option><option>4</option></select></div>
+<div style="flex:1 1 200px;"><label for="growthRate">Outyear Growth (%)</label><input id="growthRate" step="0.1" type="number" value="3"/></div>
+</div>
+<div class="pricing-tables" id="pricingTablesContainer"></div>
+<div class="controls"><div style="flex:1 1 100%;"><label for="skuInput">Additional SKUs (up to 10)</label><textarea id="skuInput" placeholder="Enter SKUs, one per line"></textarea></div></div>
+</div>
+<!-- Click-wrap Terms -->
+<div class="controls"><input id="agreeTerms" type="checkbox"/><label for="agreeTerms">I agree to the Terms &amp; Conditions for this quote</label></div>
+<!-- Footer Buttons -->
+<div class="footer-buttons">
+<button class="button-primary print-button" onclick="window.print()">Download PDF</button>
+<button class="button-primary reset-button" id="resetBtn">Reset</button>
+<button class="button-primary" disabled="" id="proceedBtn">Proceed to Payment</button>
+</div>
+<!-- Feature Modal -->
+<div id="featureModal"><div class="modal-content"><h3>Plan Features</h3><ul id="featureList"></ul><button class="close">Close</button></div></div>
+<script>
     // State → Group
     const stateToGroup = {AL:'Group A',AZ:'Group A',CA:'Group A',CO:'Group A',CT:'Group A',FL:'Group A',GA:'Group A',IL:'Group A',IN:'Group A',LA:'Group A',MA:'Group A',MD:'Group A',MI:'Group A',MN:'Group A',MO:'Group A',NJ:'Group A',NV:'Group A',NY:'Group A',OH:'Group A',OR:'Group A',PA:'Group A',SC:'Group A',TN:'Group A',TX:'Group A',VA:'Group A',WA:'Group A',WI:'Group A',AR:'Group B',DE:'Group B',HI:'Group B',IA:'Group B',ID:'Group B',KS:'Group B',KY:'Group B',ME:'Group B',MS:'Group B',NC:'Group B',NE:'Group B',NH:'Group B',OK:'Group B',RI:'Group B',UT:'Group B',WV:'Group B',AK:'Group C',ND:'Group C',NM:'Group C',SD:'Group C',MT:'Group C',WY:'Group C'};
     const tierMapping = {'Group A':['State Essential','State Enhanced','State Professional','Premier'],'Group B':['State Essential','State Enhanced','State Professional','Premier'],'Group C':['State Essential','State Enhanced','State Professional','Premier']};
@@ -266,7 +257,7 @@
 
     proceedBtn.addEventListener('click',()=>{window.location.href='payment.html';});
   </script>
-  <div id="editor-container" style="height: 300px; margin-top: 20px;"></div>
-  <button id="save-button">Save Content</button>
-</body>
+<div id="editor-container" style="height: 300px; margin-top: 20px;"></div>
+<button id="save-button">Save Content</button>
+<script src="https://cdn.quilljs.com/1.3.6/quill.js"></script><script src="script.js"></script></body>
 </html>
