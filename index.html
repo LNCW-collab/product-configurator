@@ -3,6 +3,12 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- Quill stylesheet -->
+  <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+
+<!-- Quill library -->
+  <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+
   <title>Product Configurator Comparison</title>
   <style>
     /* Typography & Base */
@@ -58,6 +64,9 @@
   </style>
 </head>
 <body>
+  <!-- Create the editor container -->
+  <div id="editor-container" style="height: 300px;"></div>
+
   <h1>Lexis+ Product Configurator Comparison</h1>
 
   <!-- State & Plans -->
