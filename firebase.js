@@ -1,4 +1,5 @@
 // firebase.js
+// Initialize Firebase and Firestore via CDN ES modules
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-app.js";
 import {
   getFirestore,
@@ -9,30 +10,24 @@ import {
   updateDoc
 } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore.js";
 
-// 1) Paste your Firebase Web config here
-// Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
-
-// Your web app's Firebase configuration
+// Your Firebase Web configuration (from the Config snippet in Console)
 const firebaseConfig = {
   apiKey: "AIzaSyB87-rBZOibNVD5Y_2FPIQWf98A7m-X09U",
   authDomain: "product-configurator-ff689.firebaseapp.com",
   projectId: "product-configurator-ff689",
-  storageBucket: "product-configurator-ff689.firebasestorage.app",
+  storageBucket: "product-configurator-ff689.appspot.com",
   messagingSenderId: "513805449458",
   appId: "1:513805449458:web:834ce115ab7971ec2b786b"
 };
 
-// Initialize Firebase
+// Initialize Firebase App
 const app = initializeApp(firebaseConfig);
-// 2) Initialize Firebase & Firestore
-const app = initializeApp(firebaseConfig);
-const db  = getFirestore(app);
+
+// Initialize Firestore
+const db = getFirestore(app);
 
 /**
- * Persist a new quote. Returns the Firestore doc ID.
+ * Persist a new quote. Returns the Firestore document ID.
  */
 export async function saveQuote(config) {
   const ref = await addDoc(collection(db, "quotes"), {
@@ -45,7 +40,7 @@ export async function saveQuote(config) {
 }
 
 /**
- * Load a quote by Firestore ID.
+ * Load a quote by its Firestore ID.
  */
 export async function loadQuote(id) {
   const snap = await getDoc(doc(db, "quotes", id));
