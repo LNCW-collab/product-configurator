@@ -15,7 +15,7 @@ const firebaseConfig = {
   apiKey: "AIzaSyB87-rBZOibNVD5Y_2FPIQWf98A7m-X09U",
   authDomain: "product-configurator-ff689.firebaseapp.com",
   projectId: "product-configurator-ff689",
-  storageBucket: "product-configurator-ff689.appspot.com",
+  storageBucket: "product-configurator-ff689.appspot.com",  // ← corrected here
   messagingSenderId: "513805449458",
   appId: "1:513805449458:web:834ce115ab7971ec2b786b"
 };
