@@ -3,82 +3,120 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Lexis+ Product Configurator</title>
+  <title>Your Custom Quote</title>
   <link rel="stylesheet" href="styles.css"/>
 </head>
 <body>
-  <div class="top-actions">
-    <button class="button-secondary" id="resetBtn">Reset</button>
-  </div>
-  <h1>Lexis+ Product Configurator</h1>
-
-  <div class="controls">
-    <div>
-      <label for="stateSelect">Jurisdiction (State)</label>
-      <select id="stateSelect"><option disabled selected>— Select State —</option></select>
-    </div>
-    <div>
-      <label for="numPlans">Number of Plans</label>
-      <select id="numPlans" disabled>
-        <option disabled selected>— Select —</option>
-        <option>1</option><option>2</option><option>3</option>
-      </select>
-    </div>
-  </div>
-
-  <div class="slots" id="slotsContainer"></div>
-  <div class="cards-grid" id="cards"></div>
-
-  <div id="pricingSection">
-    <h2>Pricing Table</h2>
-    <div class="controls">
-      <div>
-        <label for="promoToggle">Include Promotional Period?</label>
-        <select id="promoToggle">
-          <option value="no" selected>No</option>
-          <option value="yes">Yes</option>
-        </select>
-      </div>
-      <div>
-        <label for="promoPrice">Promo Monthly Rate</label>
-        <input type="number" id="promoPrice" placeholder="0.00" disabled/>
-      </div>
-      <div>
-        <label for="numYears">Number of Years</label>
-        <select id="numYears"><option>1</option><option>2</option><option>3</option><option>4</option></select>
-      </div>
-      <div>
-        <label for="growthRate">Outyear Growth (%)</label>
-        <input type="number" id="growthRate" value="3" step="0.1"/>
-      </div>
-    </div>
-    <div class="pricing-tables" id="pricingTablesContainer"></div>
-    <div class="controls">
-      <div style="flex:1 1 100%;">
-        <label for="skuInput">Additional SKUs (up to 10)</label>
-        <textarea id="skuInput" placeholder="Enter SKUs, one per line"></textarea>
-      </div>
-    </div>
-  </div>
-
-  <div class="controls">
-    <input type="checkbox" id="agreeTerms"/>
-    <label for="agreeTerms">I agree to the Terms & Conditions for this quote</label>
-  </div>
+  <h1>Your Lexis+ Quote</h1>
+  <div id="quoteContainer"></div>
   <div class="footer-buttons">
-    <button class="button-primary print-button" onclick="window.print()">Download PDF</button>
-    <button class="button-primary" id="proceedBtn" disabled>Proceed to Payment</button>
+    <button class="button-secondary" id="acceptBtn">Accept Quote</button>
   </div>
 
-  <div id="featureModal" class="modal">
-    <div class="modal-content">
-      <h3>Plan Features</h3>
-      <ul id="featureList"></ul>
-      <button class="close button-secondary">Close</button>
-    </div>
-  </div>
+  <script type="module">
+    import { loadQuote, acceptQuote } from "./firebase.js";
 
-  <script type="module" src="firebase.js"></script>
-  <script type="module" src="app.js"></script>
+    // Full mapping for features & logos
+    const featuresByTier = {
+      'State Essential': {
+        features: [
+          'State Cases: broad state-specific case law',
+          'State Statutes & Legislation: real-time updates',
+          'State Briefs, Pleadings & Motions',
+          'Verdicts & Settlements: largest collection',
+          'State Jury Instructions',
+          'Shepard’s Citations Service'
+        ],
+        logo: 'LexisPlus.png'
+      },
+      'State Enhanced': {
+        features: [
+          'All State Essential features',
+          'State Agency & Admin Materials',
+          'Federal Cases: widest federal case law',
+          'Federal Legislative Materials: congressional acts & bills',
+          'Automated Templates: State Automated Templates',
+          'Matthew Bender: State edition',
+          'Practical Guidance: All Forms & Practical Guidance'
+        ],
+        logo: 'LexisPlus.png'
+      },
+      'State Professional': {
+        features: [
+          'All State Enhanced features',
+          'Federal Agency & Admin Materials',
+          'CourtLink: court dockets & documents',
+          'News: Law360 daily coverage',
+          'Verdicts & Settlements',
+          'Jury Instructions: All Jury Instructions'
+        ],
+        logo: 'LexisPlus.png'
+      },
+      'Premier': {
+        features: [
+          'All State Professional features',
+          'AI Summaries: advanced AI insights',
+          'Advanced Research Tools'
+        ],
+        logo: 'LexisPlus.png'
+      }
+    };
+
+    async function renderQuote() {
+      const params = new URLSearchParams(location.search);
+      const id = params.get("id");
+      if (!id) {
+        document.getElementById("quoteContainer").textContent = "No quote ID provided.";
+        return;
+      }
+
+      const data = await loadQuote(id);
+      const container = document.getElementById("quoteContainer");
+      container.innerHTML = `<h2>Jurisdiction: ${data.state}</h2>`;
+
+      // pull out the chosen plan
+      const idx = data.chosenPlanIndex;
+      const plan = data.plans[idx];
+      const tierInfo = featuresByTier[plan.tier];
+      const logo = plan.platform === "Protégé" ? "Protege.png" : tierInfo.logo;
+
+      // build pricing rows
+      let rows = "";
+      if (data.promo !== null) {
+        rows += `<tr><td>Promotional Period</td><td>$${data.promo.toFixed(2)}</td></tr>`;
+      }
+      const growth = data.growth / 100;
+      for (let y = 1; y <= data.years; y++) {
+        const baseRate = y === 1
+          ? plan.rate
+          : plan.rate * Math.pow(1 + growth, y - 1);
+        rows += `<tr><td>Year ${y}</td><td>$${baseRate.toFixed(2)}</td></tr>`;
+      }
+
+      // render the card + table
+      const card = document.createElement("div");
+      card.className = "pricing-table-wrapper";
+      card.innerHTML = `
+        <h3>${plan.platform} – ${plan.tier}</h3>
+        <img src="${logo}" alt="Logo"/>
+        <table>
+          <thead><tr><th>Period</th><th>Monthly Rate</th></tr></thead>
+          <tbody>${rows}</tbody>
+        </table>
+        <h4>Features</h4>
+        <ul>
+          ${tierInfo.features.map(f => `<li>${f}</li>`).join("")}
+        </ul>
+      `;
+      container.appendChild(card);
+
+      document.getElementById("acceptBtn").addEventListener("click", async () => {
+        await acceptQuote(id);
+        alert("Quote accepted—thank you!");
+      });
+    }
+
+    renderQuote();
+  </script>
 </body>
 </html>
