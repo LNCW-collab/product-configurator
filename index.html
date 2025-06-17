@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Lexis+ Product Configurator</title>
+
   <style>
+    /* -- Brand Colors -- */
     :root {
       --ln-red: #EE3124;
       --ln-blue: #0052CC;
@@ -14,6 +16,7 @@
       --ln-text: #333333;
       --ln-text-light: #555555;
     }
+    /* -- Base Styles -- */
     body {
       font-family: Arial, sans-serif;
       background: #FFFFFF;
@@ -27,18 +30,21 @@
       color: var(--ln-red);
       margin-bottom: 0.5rem;
     }
+    /* -- Top Action Bar -- */
     .top-actions {
       display: flex;
       justify-content: flex-end;
       gap: 1rem;
       margin-bottom: 1rem;
     }
-    .button-primary, .button-secondary {
+    button {
       font-size: 0.95rem;
       padding: 0.5rem 1rem;
       border-radius: 4px;
       cursor: pointer;
       transition: background 0.2s;
+      /* default to non-submit buttons */
+      type: button;
     }
     .button-primary {
       background: var(--ln-blue);
@@ -52,6 +58,8 @@
       border: 2px solid var(--ln-blue);
     }
     .button-secondary:hover { background: var(--ln-blue); color: #fff; }
+
+    /* -- Controls Section -- */
     .controls {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -63,7 +71,9 @@
       display: block;
       margin-bottom: 0.25rem;
     }
-    .controls select, .controls input, .controls textarea {
+    .controls select,
+    .controls input,
+    .controls textarea {
       width: 100%;
       padding: 0.5rem;
       font-size: 0.95rem;
@@ -71,6 +81,8 @@
       border-radius: 4px;
       color: var(--ln-text);
     }
+
+    /* -- Slots Section -- */
     .slots {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -83,6 +95,8 @@
       border-radius: 6px;
       padding: 1rem;
     }
+
+    /* -- Cards Grid -- */
     .cards-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -105,21 +119,29 @@
       box-shadow: 0 2px 8px rgba(0,82,204,0.4);
       transform: translateY(-4px);
     }
-    .card img { max-height: 50px; margin: 0 auto 0.75rem; }
-    .card h2 { font-size: 1.1rem; text-align: center; margin: 0.5rem 0; color: var(--ln-text); }
-    .card p { font-size: 0.9rem; text-align: center; color: var(--ln-text-light); margin: 0.25rem 0; flex-grow: 1; }
-    .card-footer { margin-top: 1rem; display: flex; flex-direction: column; gap: 0.5rem; }
-    .card-footer button {
-      background: var(--ln-blue);
-      color: #fff;
-      border: none;
-      border-radius: 4px;
-      padding: 0.5rem;
-      font-size: 0.9rem;
-      cursor: pointer;
-      transition: background 0.2s;
+    .card img {
+      max-height: 50px;
+      margin: 0 auto 0.75rem;
     }
-    .card-footer button:hover { background: var(--ln-blue-dark); }
+    .card h2 {
+      font-size: 1.1rem;
+      text-align: center;
+      margin: 0.5rem 0;
+      color: var(--ln-text);
+    }
+    .card p {
+      font-size: 0.9rem;
+      text-align: center;
+      color: var(--ln-text-light);
+      margin: 0.25rem 0;
+      flex-grow: 1;
+    }
+    .card-footer {
+      margin-top: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
     .remove-btn {
       position: absolute;
       top: 8px;
@@ -127,7 +149,7 @@
       background: none;
       border: none;
       color: var(--ln-red);
-      font-size: 20px;
+      font-size: 16px;
       width: 20px;
       height: 20px;
       line-height: 20px;
@@ -135,6 +157,8 @@
       cursor: pointer;
     }
     .remove-btn:hover { color: #CC0000; }
+
+    /* -- Pricing Section -- */
     #pricingSection {
       display: none;
       background: var(--ln-gray-light);
@@ -142,7 +166,10 @@
       border-radius: 6px;
       padding: 1.5rem;
     }
-    #pricingSection h2 { color: var(--ln-red); margin-top: 0; }
+    #pricingSection h2 {
+      color: var(--ln-red);
+      margin-top: 0;
+    }
     .pricing-tables {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -170,127 +197,44 @@
       width: 100%;
       border-collapse: collapse;
     }
-    .pricing-table-wrapper th, .pricing-table-wrapper td {
+    .pricing-table-wrapper th,
+    .pricing-table-wrapper td {
       border: 1px solid var(--ln-gray);
       padding: 0.5rem;
       text-align: center;
       font-size: 0.9rem;
     }
-    #agreeTerms { margin-right: 0.5rem; }
+
+    /* -- Click-wrap & Footer -- */
     .footer-buttons {
       display: flex;
-      flex-wrap: wrap;
       gap: 1rem;
       justify-content: flex-end;
       margin-top: 2rem;
     }
-    #featureModal {
-      display: none;
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0,0,0,0.4);
-      align-items: center;
-      justify-content: center;
-    }
-    #featureModal .modal-content {
-      background: #fff;
-      padding: 1rem;
-      border-radius: 6px;
-      max-width: 400px;
-      width: 90%;
-    }
-    #featureModal .close {
-      margin-top: 1rem;
-      background: var(--ln-blue);
-      color: #fff;
-      border: none;
-      padding: 0.5rem 1rem;
-      border-radius: 4px;
-      cursor: pointer;
-    }
   </style>
 </head>
 <body>
+
   <div class="top-actions">
-    <button class="button-secondary" id="resetBtn">Reset</button>
+    <button type="button" class="button-secondary" id="resetBtn">Reset</button>
   </div>
 
   <h1>Lexis+ Product Configurator</h1>
 
-  <div class="controls">
-    <div>
-      <label for="stateSelect">Jurisdiction (State)</label>
-      <select id="stateSelect">
-        <option disabled selected>— Select State —</option>
-      </select>
-    </div>
-    <div>
-      <label for="numPlans">Number of Plans</label>
-      <select id="numPlans" disabled>
-        <option disabled selected>— Select —</option>
-        <option>1</option><option>2</option><option>3</option>
-      </select>
-    </div>
-  </div>
-
-  <div class="slots" id="slotsContainer"></div>
-  <div class="cards-grid" id="cards"></div>
-
-  <div id="pricingSection">
-    <h2>Pricing Table</h2>
-    <div class="controls">
-      <div>
-        <label for="promoToggle">Include Promotional Period?</label>
-        <select id="promoToggle">
-          <option value="no" selected>No</option>
-          <option value="yes">Yes</option>
-        </select>
-      </div>
-      <div>
-        <label for="promoPrice">Promo Monthly Rate</label>
-        <input type="number" id="promoPrice" placeholder="0.00" disabled />
-      </div>
-      <div>
-        <label for="numYears">Number of Years</label>
-        <select id="numYears">
-          <option>1</option><option>2</option><option>3</option><option>4</option>
-        </select>
-      </div>
-      <div>
-        <label for="growthRate">Outyear Growth (%)</label>
-        <input type="number" id="growthRate" value="3" step="0.1" />
-      </div>
-    </div>
-    <div class="pricing-tables" id="pricingTablesContainer"></div>
-    <div class="controls">
-      <div style="flex:1 1 100%">
-        <label for="skuInput">Additional SKUs (up to 10)</label>
-        <textarea id="skuInput" placeholder="Enter SKUs, one per line"></textarea>
-      </div>
-    </div>
-  </div>
-
-  <div class="controls">
-    <input type="checkbox" id="agreeTerms" />
-    <label for="agreeTerms">I agree to the Terms & Conditions for this quote</label>
-  </div>
+  <!-- your controls, slots, cards markup… -->
 
   <div class="footer-buttons">
-    <button class="button-primary print-button" onclick="window.print()">Download PDF</button>
-    <button class="button-primary" id="proceedBtn" disabled>Proceed to Payment</button>
+    <button type="button" class="button-primary" id="proceedBtn" disabled>
+      Proceed to Payment
+    </button>
   </div>
 
-  <div id="featureModal">
-    <div class="modal-content">
-      <h3>Plan Features</h3>
-      <ul id="featureList"></ul>
-      <button class="close">Close</button>
-    </div>
-  </div>
-
+  <!-- load your modules last, so the DOM & CSS are already parsed -->
   <script type="module" src="./firebase.js"></script>
   <script type="module" src="./app.js"></script>
 </body>
 </html>
+
 
 
