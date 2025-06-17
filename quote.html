@@ -1,44 +1,69 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>View Your Lexis+ Quote</title>
-  <style>
-    /* Copy over the same CSS from index.html for cards/pricing/modal... */
-    /* You can remove interactive bits like .card-footer button styles */
-    /* ... */
-  </style>
+  <title>Your Custom Quote</title>
+  <link rel="stylesheet" href="styles.css"/>
 </head>
 <body>
   <h1>Your Lexis+ Quote</h1>
-
-  <!-- Read-only variants of the controls aren’t needed; we just show cards + pricing -->
-  <div class="cards-grid" id="cards"></div>
-
-  <div id="pricingSection">
-    <h2>Pricing Details</h2>
-    <div class="pricing-tables" id="pricingTablesContainer"></div>
+  <div id="quoteContainer"></div>
+  <div class="footer-buttons">
+    <button class="button-primary button-secondary" id="acceptBtn">Accept Quote</button>
   </div>
 
-  <!-- Click-wrap acceptance -->
-  <div class="controls" style="margin-top:2rem;">
-    <input type="checkbox" id="acceptQuote" />
-    <label for="acceptQuote">I accept this quote and agree to the Terms & Conditions</label>
-  </div>
-  <button class="button-primary" id="checkoutBtn" disabled>Proceed to Payment</button>
+  <script type="module">
+    import { loadQuote, acceptQuote } from "./firebase.js";
 
-  <!-- Feature modal (optional) -->
-  <div id="featureModal">
-    <div class="modal-content">
-      <h3>Plan Features</h3>
-      <ul id="featureList"></ul>
-      <button class="close">Close</button>
-    </div>
-  </div>
+    async function renderQuote() {
+      const params = new URLSearchParams(location.search);
+      const id = params.get("id");
+      if (!id) return document.getElementById("quoteContainer").textContent = "No quote ID!";
+      const data = await loadQuote(id);
 
-  <!-- Modules -->
-  <script type="module" src="firebase.js"></script>
-  <script type="module" src="quote.js"></script>
+      // Header
+      const c = document.getElementById("quoteContainer");
+      c.innerHTML = `<h2>State: ${data.state}</h2>`;
+
+      // Render the chosen plan only
+      const plan = data.plans[data.chosenPlanIndex];
+      const tierData = {
+        features: plan.tier ? featuresByTier[plan.tier].features : [],
+        logo: plan.platform === "Protégé" ? "Protege.png" : "LexisPlus.png"
+      };
+
+      // Build the same pricing‐table‐wrapper
+      const wrapper = document.createElement("div");
+      wrapper.className = "pricing-table-wrapper";
+      wrapper.innerHTML = `
+        <h3>${plan.platform} – ${plan.tier}</h3>
+        <img src="${tierData.logo}" alt="Logo"/>
+        <table>
+          <thead><tr><th>Period</th><th>Monthly Rate</th></tr></thead>
+          <tbody>
+            <tr><td>Year 1</td><td>$${plan.rate.toFixed(2)}</td></tr>
+          </tbody>
+        </table>
+        <p><strong>Features:</strong> ${tierData.features.join("; ")}</p>
+      `;
+      c.appendChild(wrapper);
+
+      document.getElementById("acceptBtn").addEventListener("click", async()=>{
+        await acceptQuote(id);
+        alert("Quote accepted—thanks!");
+      });
+    }
+
+    // we need featuresByTier in this scope, so replicate it:
+    const featuresByTier = {
+      'State Essential': { features: [/*…same as before…*/], logo:'LexisPlus.png' },
+      'State Enhanced': { features: [/*…*/], logo:'LexisPlus.png' },
+      'State Professional': { features: [/*…*/], logo:'LexisPlus.png' },
+      'Premier': { features: [/*…*/], logo:'LexisPlus.png' },
+    };
+
+    renderQuote();
+  </script>
 </body>
 </html>

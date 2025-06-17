@@ -1,0 +1,117 @@
+/* styles.css */
+/* -- Brand Colors -- */
+:root {
+  --ln-red: #EE3124;
+  --ln-blue: #0052CC;
+  --ln-blue-dark: #003E99;
+  --ln-gray-light: #F2F2F2;
+  --ln-gray: #CCCCCC;
+  --ln-text: #333333;
+  --ln-text-light: #555555;
+}
+/* -- Base Styles -- */
+body {
+  font-family: Arial, sans-serif;
+  background: #FFFFFF;
+  color: var(--ln-text);
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 1rem;
+  line-height: 1.5;
+}
+h1 {
+  color: var(--ln-red);
+  margin-bottom: 0.5rem;
+}
+/* -- Top Action Bar -- */
+.top-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+.button-primary, .button-secondary {
+  font-size: 0.95rem;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.button-primary {
+  background: var(--ln-blue);
+  color: #fff;
+  border: none;
+}
+.button-primary:hover { background: var(--ln-blue-dark); }
+.button-secondary {
+  background: transparent;
+  color: var(--ln-blue);
+  border: 2px solid var(--ln-blue);
+}
+.button-secondary:hover { background: var(--ln-blue); color: #fff; }
+/* -- Controls Section -- */
+.controls {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+.controls label { font-weight: bold; display: block; margin-bottom: 0.25rem; }
+.controls select, .controls input, .controls textarea {
+  width: 100%; padding: 0.5rem; font-size: 0.95rem;
+  border: 1px solid var(--ln-gray); border-radius: 4px;
+  color: var(--ln-text);
+}
+/* -- Slots Section -- */
+.slots {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1rem; margin-bottom: 2rem;
+}
+.slot { background: var(--ln-gray-light); border: 1px solid var(--ln-gray); border-radius: 6px; padding: 1rem; }
+/* -- Cards Grid -- */
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1rem; margin-bottom: 2rem;
+}
+.card {
+  background: #fff; border: 2px solid var(--ln-red);
+  border-radius: 8px; padding: 1rem; position: relative;
+  transition: transform 0.2s, box-shadow 0.2s;
+  display: flex; flex-direction: column; justify-content: space-between;
+}
+.card.selected {
+  border-color: var(--ln-blue);
+  box-shadow: 0 2px 8px rgba(0,82,204,0.4); transform: translateY(-4px);
+}
+.card img { max-height: 50px; margin: 0 auto 0.75rem; }
+.card h2 { font-size: 1.1rem; text-align: center; margin: 0.5rem 0; }
+.card p { font-size: 0.9rem; text-align: center; margin: 0.25rem 0; flex-grow: 1; }
+.card-footer { margin-top: 1rem; display: flex; flex-direction: column; gap: 0.5rem; }
+.card-footer button { background: var(--ln-blue); color: #fff; border: none; border-radius: 4px; padding: 0.5rem; cursor: pointer; transition: background 0.2s; }
+.card-footer button:hover { background: var(--ln-blue-dark); }
+.remove-btn {
+  position: absolute; top: 8px; right: 8px; background: none; border: none;
+  color: var(--ln-red); font-size: 16px; width: 20px; height: 20px;
+  line-height: 20px; text-align: center; cursor: pointer;
+}
+.remove-btn:hover { color: #CC0000; }
+/* -- Pricing Section -- */
+#pricingSection {
+  display: none; background: var(--ln-gray-light);
+  border-top: 3px solid var(--ln-red); border-radius: 6px; padding: 1.5rem;
+}
+#pricingSection h2 { color: var(--ln-red); margin-top: 0; }
+.pricing-tables {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1rem; margin-top: 1rem;
+}
+.pricing-table-select {
+  background: #fff; border: 1px solid var(--ln-gray); border-radius: 6px;
+  padding: 0.5rem; display: flex; flex-direction: column; gap: 0.5rem;
+}
+.pricing-table-select label { font-weight: bold; cursor: pointer; }
+.pricing-table-select input[type=radio] { margin-right: 0.5rem; }
+/* -- Quote Page Overrides (if any) -- */
