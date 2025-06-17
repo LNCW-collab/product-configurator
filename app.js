@@ -89,7 +89,9 @@ let selectedGroup = null;
 let selectedPlans = [];
 
 // Populate state dropdown
-Object.keys(stateToGroup).forEach(s => sgSelect.add(new Option(s,s)));
+Object.keys(stateToGroup).forEach(s => {
+  sgSelect.add(new Option(s, s));
+});
 sgSelect.addEventListener('change', () => {
   selectedGroup = stateToGroup[sgSelect.value];
   numSelect.disabled = false;
@@ -109,8 +111,9 @@ numSelect.addEventListener('change', () => {
 
 function renderSlot(i) {
   const d = document.createElement('div');
-  d.className='slot'; d.id=`slot${i}`;
-  d.innerHTML=`
+  d.className = 'slot';
+  d.id = `slot${i}`;
+  d.innerHTML = `
     <label>Platform</label>
     <select id="platform${i}">
       <option disabled selected>— Select —</option>
@@ -129,11 +132,11 @@ function renderSlot(i) {
 
 function setupSlots() {
   selectedPlans = [];
-  const arr = Array.from(slotsCnt.children).map(div=>({
-    plat: div.querySelector('[id^=platform]'),
-    tier: div.querySelector('[id^=tier]'),
+  const arr = Array.from(slotsCnt.children).map(div => ({
+    plat:  div.querySelector('[id^=platform]'),
+    tier:  div.querySelector('[id^=tier]'),
     price: div.querySelector('input[id^=price]'),
-    idx: Array.from(slotsCnt.children).indexOf(div)
+    idx:   Array.from(slotsCnt.children).indexOf(div)
   }));
 
   arr.forEach(s => {
@@ -141,32 +144,46 @@ function setupSlots() {
     s.plat.addEventListener('change', () => {
       s.tier.disabled = false;
       s.tier.innerHTML = `<option disabled selected>— Select —</option>`;
-      tierMapping[selectedGroup].forEach(t=> s.tier.add(new Option(t,t)));
+      tierMapping[selectedGroup].forEach(t => s.tier.add(new Option(t, t)));
       s.price.disabled = true;
-      updateCards(); resetAll();
+      updateCards();
+      resetAll();
     });
-    s.tier.addEventListener('change', () => { s.price.disabled=false; updateCards(); resetAll(); });
-    s.price.addEventListener('input', ()=>{ updateCards(); resetAll(); });
+    s.tier.addEventListener('change', () => {
+      s.price.disabled = false;
+      updateCards();
+      resetAll();
+    });
+    s.price.addEventListener('input', () => {
+      updateCards();
+      resetAll();
+    });
   });
 }
 
 function updateCards() {
   cardsCnt.innerHTML = '';
   selectedPlans = [];
-  Array.from(slotsCnt.children).forEach((div,i)=> {
+  Array.from(slotsCnt.children).forEach((div, i) => {
     const platRaw = div.querySelector('[id^=platform]').value;
     const tierRaw = div.querySelector('[id^=tier]').value;
     const rateRaw = div.querySelector('input[id^=price]').value;
-    const plat = platRaw.trim(), tier = tierRaw.trim(), rate = rateRaw.trim();
-    if (!plat||!tier) return;
+    const plat = platRaw.trim();
+    const tier = tierRaw.trim();
+    const rate = rateRaw.trim();
+    if (!plat || !tier) return;
 
     const data = featuresByTier[tier];
-    if (!data) { console.warn(`no features for ${tier}`); return; }
+    if (!data) {
+      console.warn(`no features for ${tier}`);
+      return;
+    }
 
-    const logo = plat==='Protégé' ? 'Protege.png' : data.logo;
+    const logo = plat === 'Protégé' ? 'Protege.png' : data.logo;
     const card = document.createElement('div');
-    card.className='card'; card.dataset.slot=i;
-    card.innerHTML=`
+    card.className = 'card';
+    card.dataset.slot = i;
+    card.innerHTML = `
       <button class="remove-btn" data-slot="${i}">&times;</button>
       <img src="${logo}" alt="Logo"/>
       <h2>${plat} – ${tier}</h2>
@@ -181,36 +198,41 @@ function updateCards() {
   });
 }
 
-// card-buttons
-cardsCnt.addEventListener('click', e=>{
+// Card-buttons delegation
+cardsCnt.addEventListener('click', e => {
+  // Remove card
   if (e.target.matches('.remove-btn')) {
     const i = +e.target.dataset.slot;
     const slot = slotsCnt.children[i];
-    slot.querySelector('[id^=platform]').value='';
+    slot.querySelector('[id^=platform]').value = '';
     const tsel = slot.querySelector('[id^=tier]');
-    tsel.innerHTML=`<option disabled selected>— Select —</option>`;
+    tsel.innerHTML = `<option disabled selected>— Select —</option>`;
     tsel.disabled = true;
     const pin = slot.querySelector('input[id^=price]');
-    pin.value=''; pin.disabled=true;
+    pin.value = '';
+    pin.disabled = true;
     updateCards();
     return;
   }
 
+  // Show/hide pricing table and toggle selection
   if (e.target.matches('.pricing-btn')) {
     const i = +e.target.dataset.slot;
     const c = e.target.closest('.card');
     if (selectedPlans.includes(i)) {
-      selectedPlans = selectedPlans.filter(x=>x!==i);
+      selectedPlans = selectedPlans.filter(x => x !== i);
       c.classList.remove('selected');
     } else {
       selectedPlans.push(i);
       c.classList.add('selected');
     }
-    promoInp.disabled = promoTog.value==='no' || !selectedPlans.length;
-    generateTables(); updateProceed();
+    promoInp.disabled = promoTog.value === 'no' || !selectedPlans.length;
+    generateTables();
+    updateProceed();
     return;
   }
 
+  // View full feature list
   if (e.target.matches('.details-btn')) {
     const i = +e.target.dataset.slot;
     const tier = slotsCnt.children[i].querySelector('[id^=tier]').value;
@@ -218,37 +240,37 @@ cardsCnt.addEventListener('click', e=>{
   }
 });
 
-function resetAll(){
-  priceSec.style.display='none';
-  promoTog.value='no';
-  promoInp.disabled=true; promoInp.value='';
-  yearsSel.value='1'; growthInp.value='3';
-  tablesCnt.innerHTML=''; skuInput.value='';
-  agreeChk.checked=false; proceedBtn.disabled=true;
-  selectedPlans=[]; document.querySelectorAll('.card.selected').forEach(c=>c.classList.remove('selected'));
+function resetAll() {
+  priceSec.style.display   = 'none';
+  promoTog.value           = 'no';
+  promoInp.disabled        = true;
+  promoInp.value           = '';
+  yearsSel.value           = '1';
+  growthInp.value          = '3';
+  tablesCnt.innerHTML      = '';
+  skuInput.value           = '';
+  agreeChk.checked         = false;
+  proceedBtn.disabled      = true;
+  selectedPlans            = [];
+  document.querySelectorAll('.card.selected').forEach(c => c.classList.remove('selected'));
 }
 
-// …above this, all your existing variable & DOM refs…
-
-// Re-work generateTables to always render y=1…N rows
+// Generate pricing tables with compounded out-year rows + radio selector
 function generateTables() {
-  // if no plans selected, hide and bail
   if (selectedPlans.length === 0) {
     priceSec.style.display = 'none';
-    tablesCnt.innerHTML = '';
+    tablesCnt.innerHTML    = '';
     return;
   }
 
+  priceSec.style.display = 'block';
+  tablesCnt.innerHTML    = '';
+
   const includePromo = promoTog.value === 'yes';
   const promoVal     = includePromo ? +promoInp.value : 0;
-  const yrs          = +yearsSel.value;            // number of years from dropdown
-  const gr           = +growthInp.value / 100;     // percentage → decimal
+  const yrs          = +yearsSel.value;
+  const gr           = +growthInp.value / 100;
 
-  // show the whole section and clear existing tables
-  priceSec.style.display = 'block';
-  tablesCnt.innerHTML = '';
-
-  // for each selected plan, build a little pricing table
   selectedPlans.forEach(i => {
     const slot = slotsCnt.children[i];
     const p    = slot.querySelector('[id^=platform]').value;
@@ -257,30 +279,30 @@ function generateTables() {
     const data = featuresByTier[t];
     const logo = p === 'Protégé' ? 'Protege.png' : data.logo;
 
-    // build the rows string
     let rows = '';
-
     if (includePromo) {
       rows += `<tr><td>Promotional Period</td><td>$${promoVal.toFixed(2)}</td></tr>`;
     }
-
     for (let y = 1; y <= yrs; y++) {
-      // Year 1 = base rate; subsequent years compound by growth rate
       const rate = y === 1
         ? r
         : r * Math.pow(1 + gr, y - 1);
-
       rows += `<tr><td>Year ${y}</td><td>$${rate.toFixed(2)}</td></tr>`;
     }
 
-    // create the wrapper DIV and insert into the DOM
     const wrapper = document.createElement('div');
     wrapper.className = 'pricing-table-wrapper';
     wrapper.innerHTML = `
+      <label class="select-quote">
+        <input type="radio" name="chosenQuote" value="${i}" />
+        Select this quote
+      </label>
       <h3>${p} – ${t}</h3>
-      <img src="${logo}" alt="Logo" />
+      <img src="${logo}" alt="Logo"/>
       <table>
-        <thead><tr><th>Period</th><th>Monthly Rate</th></tr></thead>
+        <thead>
+          <tr><th>Period</th><th>Monthly Rate</th></tr>
+        </thead>
         <tbody>${rows}</tbody>
       </table>
     `;
@@ -288,58 +310,61 @@ function generateTables() {
   });
 }
 
-// Make sure changing Years or Growth re-calls generateTables
-yearsSel.addEventListener('change', () => {
-  generateTables();
-  updateProceed();  // if you want the Proceed button enabled/disabled immediately
+// Re-run updateProceed whenever a radio changes
+tablesCnt.addEventListener('change', e => {
+  if (e.target.matches('input[name="chosenQuote"]')) {
+    updateProceed();
+  }
 });
-growthInp.addEventListener('input', () => {
-  generateTables();
-  updateProceed();
-});
+
+// Wire up changes to Years, Growth, Promo toggles
+yearsSel.addEventListener('change', () => { generateTables(); updateProceed(); });
+growthInp.addEventListener('input', () => { generateTables(); updateProceed(); });
 promoTog.addEventListener('change', () => {
-  // toggle the promo-input field enabled state
   promoInp.disabled = promoTog.value === 'no' || selectedPlans.length === 0;
   generateTables();
   updateProceed();
 });
-promoInp.addEventListener('input', () => {
-  generateTables();
-  updateProceed();
-});
+promoInp.addEventListener('input', () => { generateTables(); updateProceed(); });
 
-
-function showModal(list){
-  featureUl.innerHTML='';
-  list.forEach(f=>{
+// Modal feature list
+function showModal(list) {
+  featureUl.innerHTML = '';
+  list.forEach(f => {
     const li = document.createElement('li');
     li.textContent = f;
     featureUl.appendChild(li);
   });
-  modal.style.display='flex';
+  modal.style.display = 'flex';
 }
-closeModal.addEventListener('click', ()=>modal.style.display='none');
-window.addEventListener('click', e=>{ if(e.target===modal) modal.style.display='none'; });
+closeModal.addEventListener('click', () => modal.style.display = 'none');
+window.addEventListener('click', e => {
+  if (e.target === modal) modal.style.display = 'none';
+});
 
-function updateProceed(){
+// Enable Proceed when both a radio is checked and terms are agreed
+function updateProceed() {
   const gotRadio = !!document.querySelector('input[name=chosenQuote]:checked');
   proceedBtn.disabled = !(gotRadio && agreeChk.checked);
 }
-
-// Reset & Proceed handlers
-resetBtn.addEventListener('click', ()=>{
-  sgSelect.selectedIndex=0;
-  numSelect.disabled=true; numSelect.selectedIndex=0;
-  slotsCnt.innerHTML=''; cardsCnt.innerHTML='';
-  resetAll();
-});
 agreeChk.addEventListener('change', updateProceed);
 
-proceedBtn.addEventListener('click', async()=>{
+// Reset button
+resetBtn.addEventListener('click', () => {
+  sgSelect.selectedIndex = 0;
+  numSelect.disabled     = true;
+  numSelect.selectedIndex= 0;
+  slotsCnt.innerHTML     = '';
+  cardsCnt.innerHTML     = '';
+  resetAll();
+});
+
+// Proceed → save and redirect
+proceedBtn.addEventListener('click', async () => {
   const chosen = Number(document.querySelector('input[name=chosenQuote]:checked').value);
   const config = {
     state: sgSelect.value,
-    plans: selectedPlans.map(i=>{
+    plans: selectedPlans.map(i => {
       const s = slotsCnt.children[i];
       return {
         platform: s.querySelector('[id^=platform]').value,
@@ -347,7 +372,7 @@ proceedBtn.addEventListener('click', async()=>{
         rate:     +s.querySelector('input[id^=price]').value
       };
     }),
-    promo:  promoTog.value==='yes'?+promoInp.value:null,
+    promo:  promoTog.value==='yes' ? +promoInp.value : null,
     years:  +yearsSel.value,
     growth: +growthInp.value,
     skus:   skuInput.value.split('\n').filter(x=>x),
