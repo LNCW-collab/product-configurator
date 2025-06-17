@@ -43,8 +43,6 @@
       border-radius: 4px;
       cursor: pointer;
       transition: background 0.2s;
-      /* default to non-submit buttons */
-      type: button;
     }
     .button-primary {
       background: var(--ln-blue);
@@ -212,6 +210,32 @@
       justify-content: flex-end;
       margin-top: 2rem;
     }
+
+    /* -- Modal -- */
+    #featureModal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.4);
+      justify-content: center;
+      align-items: center;
+    }
+    #featureModal .modal-content {
+      background: #fff;
+      border-radius: 6px;
+      padding: 1.5rem;
+      max-width: 400px;
+      width: 90%;
+    }
+    #featureModal .close {
+      margin-top: 1rem;
+      background: var(--ln-red);
+      color: #fff;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
@@ -222,7 +246,66 @@
 
   <h1>Lexis+ Product Configurator</h1>
 
-  <!-- your controls, slots, cards markup… -->
+  <div class="controls">
+    <div>
+      <label for="stateSelect">Jurisdiction (State)</label>
+      <select id="stateSelect">
+        <option disabled selected>— Select State —</option>
+      </select>
+    </div>
+    <div>
+      <label for="numPlans">Number of Plans</label>
+      <select id="numPlans" disabled>
+        <option disabled selected>— Select —</option>
+        <option>1</option><option>2</option><option>3</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="slots" id="slotsContainer"></div>
+
+  <div class="cards-grid" id="cards"></div>
+
+  <div id="pricingSection">
+    <h2>Pricing Table</h2>
+    <div class="controls">
+      <div>
+        <label for="promoToggle">Include Promotional Period?</label>
+        <select id="promoToggle">
+          <option value="no" selected>No</option>
+          <option value="yes">Yes</option>
+        </select>
+      </div>
+      <div>
+        <label for="promoPrice">Promo Monthly Rate</label>
+        <input type="number" id="promoPrice" placeholder="0.00" disabled/>
+      </div>
+      <div>
+        <label for="numYears">Number of Years</label>
+        <select id="numYears">
+          <option>1</option><option>2</option><option>3</option><option>4</option>
+        </select>
+      </div>
+      <div>
+        <label for="growthRate">Outyear Growth (%)</label>
+        <input type="number" id="growthRate" value="3" step="0.1"/>
+      </div>
+    </div>
+
+    <div class="pricing-tables" id="pricingTablesContainer"></div>
+
+    <div class="controls">
+      <div style="flex:1 1 100%;">
+        <label for="skuInput">Additional SKUs (up to 10)</label>
+        <textarea id="skuInput" placeholder="Enter SKUs, one per line"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <div class="controls" style="align-items:center;">
+    <input type="checkbox" id="agreeTerms"/>
+    <label for="agreeTerms">I agree to the Terms & Conditions for this quote</label>
+  </div>
 
   <div class="footer-buttons">
     <button type="button" class="button-primary" id="proceedBtn" disabled>
@@ -230,11 +313,16 @@
     </button>
   </div>
 
-  <!-- load your modules last, so the DOM & CSS are already parsed -->
+  <div id="featureModal">
+    <div class="modal-content">
+      <h3>Plan Features</h3>
+      <ul id="featureList"></ul>
+      <button class="close">Close</button>
+    </div>
+  </div>
+
+  <!-- modules at the very end -->
   <script type="module" src="./firebase.js"></script>
   <script type="module" src="./app.js"></script>
 </body>
 </html>
-
-
-
