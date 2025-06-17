@@ -228,75 +228,86 @@ function resetAll(){
   selectedPlans=[]; document.querySelectorAll('.card.selected').forEach(c=>c.classList.remove('selected'));
 }
 
-function generateTables(){
-  if (!selectedPlans.length) {
-    priceSec.style.display='none';
-    tablesCnt.innerHTML='';
+// …above this, all your existing variable & DOM refs…
+
+// Re-work generateTables to always render y=1…N rows
+function generateTables() {
+  // if no plans selected, hide and bail
+  if (selectedPlans.length === 0) {
+    priceSec.style.display = 'none';
+    tablesCnt.innerHTML = '';
     return;
   }
 
-  priceSec.style.display='block';
-  tablesCnt.innerHTML='';
+  const includePromo = promoTog.value === 'yes';
+  const promoVal     = includePromo ? +promoInp.value : 0;
+  const yrs          = +yearsSel.value;            // number of years from dropdown
+  const gr           = +growthInp.value / 100;     // percentage → decimal
 
-  const includePromo = promoTog.value==='yes';
-  const promoVal = includePromo ? +promoInp.value : 0;
-  const yrs = +yearsSel.value;
-  const gr = +growthInp.value / 100;
+  // show the whole section and clear existing tables
+  priceSec.style.display = 'block';
+  tablesCnt.innerHTML = '';
 
-  selectedPlans.forEach(i=>{
+  // for each selected plan, build a little pricing table
+  selectedPlans.forEach(i => {
     const slot = slotsCnt.children[i];
-    const p = slot.querySelector('[id^=platform]').value;
-    const t = slot.querySelector('[id^=tier]').value;
-    const r = +slot.querySelector('input[id^=price]').value;
+    const p    = slot.querySelector('[id^=platform]').value;
+    const t    = slot.querySelector('[id^=tier]').value;
+    const r    = +slot.querySelector('input[id^=price]').value;
     const data = featuresByTier[t];
-    const logo = p==='Protégé' ? 'Protege.png' : data.logo;
+    const logo = p === 'Protégé' ? 'Protege.png' : data.logo;
 
-    // build the table rows
+    // build the rows string
     let rows = '';
+
     if (includePromo) {
       rows += `<tr><td>Promotional Period</td><td>$${promoVal.toFixed(2)}</td></tr>`;
     }
-    for (let y=1; y<=yrs; y++) {
-      const rate = y===1 ? r : r*Math.pow(1+gr, y-1);
+
+    for (let y = 1; y <= yrs; y++) {
+      // Year 1 = base rate; subsequent years compound by growth rate
+      const rate = y === 1
+        ? r
+        : r * Math.pow(1 + gr, y - 1);
+
       rows += `<tr><td>Year ${y}</td><td>$${rate.toFixed(2)}</td></tr>`;
     }
 
-    // radio + table wrapper
+    // create the wrapper DIV and insert into the DOM
     const wrapper = document.createElement('div');
-    wrapper.className = 'pricing-table-select';
-
-    const radio = document.createElement('input');
-    radio.type = 'radio';
-    radio.name = 'chosenQuote';
-    radio.value = i;
-    radio.id = `choose-${i}`;
-
-    const label = document.createElement('label');
-    label.htmlFor = `choose-${i}`;
-    label.textContent = 'Select this quote';
-
-    const w = document.createElement('div');
-    w.className = 'pricing-table-wrapper';
-    w.innerHTML = `
+    wrapper.className = 'pricing-table-wrapper';
+    wrapper.innerHTML = `
       <h3>${p} – ${t}</h3>
-      <img src="${logo}" alt="Logo"/>
+      <img src="${logo}" alt="Logo" />
       <table>
         <thead><tr><th>Period</th><th>Monthly Rate</th></tr></thead>
         <tbody>${rows}</tbody>
       </table>
     `;
-
-    wrapper.appendChild(radio);
-    wrapper.appendChild(label);
-    wrapper.appendChild(w);
     tablesCnt.appendChild(wrapper);
   });
-
-  // enable proceed only if a radio is checked
-  document.querySelectorAll('input[name=chosenQuote]').forEach(r=>{
-    r.addEventListener('change', updateProceed);
-  });
 }
+
+// Make sure changing Years or Growth re-calls generateTables
+yearsSel.addEventListener('change', () => {
+  generateTables();
+  updateProceed();  // if you want the Proceed button enabled/disabled immediately
+});
+growthInp.addEventListener('input', () => {
+  generateTables();
+  updateProceed();
+});
+promoTog.addEventListener('change', () => {
+  // toggle the promo-input field enabled state
+  promoInp.disabled = promoTog.value === 'no' || selectedPlans.length === 0;
+  generateTables();
+  updateProceed();
+});
+promoInp.addEventListener('input', () => {
+  generateTables();
+  updateProceed();
+});
+
 
 function showModal(list){
   featureUl.innerHTML='';
