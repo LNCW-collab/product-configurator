@@ -3,27 +3,27 @@ import { saveQuote } from "./firebase.js";
 
 // Data definitions
 const stateToGroup = {
-  AL:'Group A',AZ:'Group A',CA:'Group A',CO:'Group A',CT:'Group A',
-  FL:'Group A',GA:'Group A',IL:'Group A',IN:'Group A',LA:'Group A',
-  MA:'Group A',MD:'Group A',MI:'Group A',MN:'Group A',MO:'Group A',
-  NJ:'Group A',NV:'Group A',NY:'Group A',OH:'Group A',OR:'Group A',
-  PA:'Group A',SC:'Group A',TN:'Group A',TX:'Group A',VA:'Group A',
-  WA:'Group A',WI:'Group A',
-  AR:'Group B',DE:'Group B',HI:'Group B',IA:'Group B',ID:'Group B',
-  KS:'Group B',KY:'Group B',ME:'Group B',MS:'Group B',NC:'Group B',
-  NE:'Group B',NH:'Group B',OK:'Group B',RI:'Group B',UT:'Group B',
-  WV:'Group B',
-  AK:'Group C',ND:'Group C',NM:'Group C',SD:'Group C',MT:'Group C',
-  WY:'Group C'
+  AL: 'Group A', AZ: 'Group A', CA: 'Group A', CO: 'Group A', CT: 'Group A',
+  FL: 'Group A', GA: 'Group A', IL: 'Group A', IN: 'Group A', LA: 'Group A',
+  MA: 'Group A', MD: 'Group A', MI: 'Group A', MN: 'Group A', MO: 'Group A',
+  NJ: 'Group A', NV: 'Group A', NY: 'Group A', OH: 'Group A', OR: 'Group A',
+  PA: 'Group A', SC: 'Group A', TN: 'Group A', TX: 'Group A', VA: 'Group A',
+  WA: 'Group A', WI: 'Group A',
+  AR: 'Group B', DE: 'Group B', HI: 'Group B', IA: 'Group B', ID: 'Group B',
+  KS: 'Group B', KY: 'Group B', ME: 'Group B', MS: 'Group B', NC: 'Group B',
+  NE: 'Group B', NH: 'Group B', OK: 'Group B', RI: 'Group B', UT: 'Group B',
+  WV: 'Group B',
+  AK: 'Group C', ND: 'Group C', NM: 'Group C', SD: 'Group C', MT: 'Group C',
+  WY: 'Group C'
 };
 const tierMapping = {
-  "Group A": ["State Essential","State Enhanced","State Professional","Premier"],
-  "Group B": ["State Essential","State Enhanced","State Professional","Premier"],
-  "Group C": ["State Essential","State Enhanced","State Professional","Premier"]
+  "Group A": ["State Essential", "State Enhanced", "State Professional", "Premier"],
+  "Group B": ["State Essential", "State Enhanced", "State Professional", "Premier"],
+  "Group C": ["State Essential", "State Enhanced", "State Professional", "Premier"]
 };
 const featuresByTier = {
   'State Essential': {
-    features:[
+    features: [
       'State Cases: broad state-specific case law',
       'State Statutes & Legislation: real-time updates',
       'State Briefs, Pleadings & Motions',
@@ -31,10 +31,10 @@ const featuresByTier = {
       'State Jury Instructions',
       'Shepard’s Citations Service'
     ],
-    logo:'LexisPlus.png'
+    logo: 'LexisPlus.png'
   },
   'State Enhanced': {
-    features:[
+    features: [
       'All State Essential features',
       'State Agency & Admin Materials',
       'Federal Cases: widest federal case law',
@@ -43,10 +43,10 @@ const featuresByTier = {
       'Matthew Bender: State edition',
       'Practical Guidance: All Forms & Practical Guidance'
     ],
-    logo:'LexisPlus.png'
+    logo: 'LexisPlus.png'
   },
   'State Professional': {
-    features:[
+    features: [
       'All State Enhanced features',
       'Federal Agency & Admin Materials',
       'CourtLink: court dockets & documents',
@@ -54,15 +54,15 @@ const featuresByTier = {
       'Verdicts & Settlements',
       'Jury Instructions: All Jury Instructions'
     ],
-    logo:'LexisPlus.png'
+    logo: 'LexisPlus.png'
   },
   'Premier': {
-    features:[
+    features: [
       'All State Professional features',
       'AI Summaries: advanced AI insights',
       'Advanced Research Tools'
     ],
-    logo:'LexisPlus.png'
+    logo: 'LexisPlus.png'
   }
 };
 
@@ -89,7 +89,7 @@ let selectedGroup = null;
 let selectedPlans = [];
 
 // Populate state dropdown
-Object.keys(stateToGroup).forEach(s => sgSelect.add(new Option(s,s)));
+Object.keys(stateToGroup).forEach(s => sgSelect.add(new Option(s, s)));
 sgSelect.addEventListener('change', () => {
   selectedGroup = stateToGroup[sgSelect.value];
   numSelect.disabled = false;
@@ -109,7 +109,7 @@ numSelect.addEventListener('change', () => {
 
 function renderSlot(i) {
   const d = document.createElement('div');
-  d.className = 'slot'; d.id = 'slot'+i;
+  d.className = 'slot'; d.id = 'slot' + i;
   d.innerHTML = `
     <label>Platform</label>
     <select id="platform${i}">
@@ -128,116 +128,132 @@ function renderSlot(i) {
 
 function setupSlots() {
   selectedPlans = [];
-  const arr = Array.from(slotsCnt.children).map(div=>({
-    plat:div.querySelector('[id^=platform]'),
-    tier:div.querySelector('[id^=tier]'),
-    price:div.querySelector('input[id^=price]'),
-    idx:Array.from(slotsCnt.children).indexOf(div)
+  const arr = Array.from(slotsCnt.children).map(div => ({
+    plat: div.querySelector('[id^=platform]'),
+    tier: div.querySelector('[id^=tier]'),
+    price: div.querySelector('input[id^=price]'),
+    idx:   Array.from(slotsCnt.children).indexOf(div)
   }));
-  arr.forEach(s=>{
-    s.plat.disabled=false;
-    s.plat.addEventListener('change',()=>{
-      s.tier.disabled=false;
-      s.tier.innerHTML=`<option disabled selected>— Select —</option>`;
-      tierMapping[selectedGroup].forEach(t=>s.tier.add(new Option(t,t)));
-      s.price.disabled=true;
+  arr.forEach(s => {
+    s.plat.disabled = false;
+    s.plat.addEventListener('change', () => {
+      s.tier.disabled = false;
+      s.tier.innerHTML = `<option disabled selected>— Select —</option>`;
+      tierMapping[selectedGroup].forEach(t => s.tier.add(new Option(t, t)));
+      s.price.disabled = true;
       updateCards(); resetAll();
     });
-    s.tier.addEventListener('change',()=>{ s.price.disabled=false; updateCards(); resetAll(); });
-    s.price.addEventListener('input',()=>{ updateCards(); resetAll(); });
+    s.tier.addEventListener('change', () => { s.price.disabled = false; updateCards(); resetAll(); });
+    s.price.addEventListener('input', () => { updateCards(); resetAll(); });
   });
 }
 
 function updateCards() {
-  cardsCnt.innerHTML=''; selectedPlans=[];
-  Array.from(slotsCnt.children).forEach((div,i)=>{
-    const plat=div.querySelector('[id^=platform]').value.trim();
-    const tier=div.querySelector('[id^=tier]').value.trim();
-    const rate=div.querySelector('input[id^=price]').value.trim();
-    if(!plat||!tier) return;
-    const data=featuresByTier[tier];
-    if(!data) { console.warn(`no features for ${tier}`); return; }
-    const logo=plat==='Protégé'?'Protege.png':data.logo;
-    const card=document.createElement('div');
-    card.className='card'; card.dataset.slot=i;
-    card.innerHTML=`
-      <button class="remove-btn" data-slot="${i}">&times;</button>
+  cardsCnt.innerHTML = '';
+  selectedPlans = [];
+  Array.from(slotsCnt.children).forEach((div, i) => {
+    const plat = div.querySelector('[id^=platform]').value.trim();
+    const tier = div.querySelector('[id^=tier]').value.trim();
+    const rate = div.querySelector('input[id^=price]').value.trim();
+    if (!plat || !tier) return;
+    const data = featuresByTier[tier];
+    if (!data) { console.warn(`no features for ${tier}`); return; }
+    const logo = plat === 'Protégé' ? 'Protege.png' : data.logo;
+    const card = document.createElement('div');
+    card.className = 'card'; card.dataset.slot = i;
+    card.innerHTML = `
+      <button type="button" class="remove-btn" data-slot="${i}">&times;</button>
       <img src="${logo}" alt="Logo"/>
       <h2>${plat} – ${tier}</h2>
       <p><strong>Monthly Rate:</strong> $${rate}</p>
       <p><strong>Features:</strong> ${data.features.join('; ')}</p>
       <div class="card-footer">
-        <button data-slot="${i}" class="pricing-btn">Show Pricing Table</button>
-        <button data-slot="${i}" class="details-btn">View Full Features</button>
+        <button type="button" data-slot="${i}" class="pricing-btn">Show Pricing Table</button>
+        <button type="button" data-slot="${i}" class="details-btn">View Full Features</button>
       </div>
     `;
     cardsCnt.appendChild(card);
   });
 }
 
-cardsCnt.addEventListener('click', e=>{
-  if(e.target.matches('.remove-btn')){
-    const i=+e.target.dataset.slot;
-    const slot=slotsCnt.children[i];
-    slot.querySelector('[id^=platform]').value='';
-    const tsel=slot.querySelector('[id^=tier]');
-    tsel.innerHTML=`<option disabled selected>— Select —</option>`; tsel.disabled=true;
-    const pin=slot.querySelector('input[id^=price]');
-    pin.value=''; pin.disabled=true;
-    updateCards(); return;
+// delegate clicks on all card buttons
+cardsCnt.addEventListener('click', e => {
+  // Remove
+  if (e.target.matches('.remove-btn')) {
+    const i = +e.target.dataset.slot;
+    const slot = slotsCnt.children[i];
+    slot.querySelector('[id^=platform]').value = '';
+    const tsel = slot.querySelector('[id^=tier]');
+    tsel.innerHTML = `<option disabled selected>— Select —</option>`; tsel.disabled = true;
+    const pin = slot.querySelector('input[id^=price]');
+    pin.value = ''; pin.disabled = true;
+    updateCards();
+    return;
   }
-  if(e.target.matches('.pricing-btn')){
-    const i=+e.target.dataset.slot;
-    const c=e.target.closest('.card');
-    if(selectedPlans.includes(i)){
-      selectedPlans = selectedPlans.filter(x=>x!==i);
+  // Pricing toggle
+  if (e.target.matches('.pricing-btn')) {
+    const i = +e.target.dataset.slot;
+    const c = e.target.closest('.card');
+    if (selectedPlans.includes(i)) {
+      selectedPlans = selectedPlans.filter(x => x !== i);
       c.classList.remove('selected');
     } else {
       selectedPlans.push(i);
       c.classList.add('selected');
     }
-    promoInp.disabled = promoTog.value==='no'||!selectedPlans.length;
+    promoInp.disabled = promoTog.value === 'no' || !selectedPlans.length;
     generateTables(); updateProceed();
     return;
   }
-  if(e.target.matches('.details-btn')){
-    const i=+e.target.dataset.slot;
-    const tier=slotsCnt.children[i].querySelector('[id^=tier]').value;
+  // Details modal
+  if (e.target.matches('.details-btn')) {
+    const i = +e.target.dataset.slot;
+    const tier = slotsCnt.children[i].querySelector('[id^=tier]').value;
     showModal(featuresByTier[tier].features);
   }
 });
 
-function resetAll(){
-  priceSec.style.display='none';
-  promoTog.value='no';
-  promoInp.disabled=true; promoInp.value='';
-  yearsSel.value='1'; growthInp.value='3';
-  tablesCnt.innerHTML=''; skuInput.value='';
-  agreeChk.checked=false; proceedBtn.disabled=true;
-  selectedPlans=[]; document.querySelectorAll('.card.selected').forEach(c=>c.classList.remove('selected'));
+function resetAll() {
+  priceSec.style.display    = 'none';
+  promoTog.value            = 'no';
+  promoInp.disabled         = true;   promoInp.value = '';
+  yearsSel.value            = '1';    growthInp.value = '3';
+  tablesCnt.innerHTML       = '';
+  skuInput.value            = '';
+  agreeChk.checked          = false;
+  proceedBtn.disabled       = true;
+  selectedPlans             = [];
+  document.querySelectorAll('.card.selected').forEach(c => c.classList.remove('selected'));
 }
 
-function generateTables(){
-  if(!selectedPlans.length){ priceSec.style.display='none'; tablesCnt.innerHTML=''; return; }
-  priceSec.style.display='block'; tablesCnt.innerHTML='';
-  const includePromo=promoTog.value==='yes', promoVal=includePromo?+promoInp.value:0;
-  const yrs=+yearsSel.value, gr=+growthInp.value/100;
-  selectedPlans.forEach(i=>{
-    const slot=slotsCnt.children[i];
-    const p=slot.querySelector('[id^=platform]').value;
-    const t=slot.querySelector('[id^=tier]').value;
-    const r=+slot.querySelector('input[id^=price]').value;
-    const data=featuresByTier[t];
-    const logo=p==='Protégé'?'Protege.png':data.logo;
-    let rows='';
-    if(includePromo) rows+=`<tr><td>Promotional Period</td><td>$${promoVal.toFixed(2)}</td></tr>`;
-    for(let y=1;y<=yrs;y++){
-      const rate = y===1?r: r*Math.pow(1+gr,y-1);
-      rows+=`<tr><td>Year ${y}</td><td>$${rate.toFixed(2)}</td></tr>`;
+function generateTables() {
+  if (!selectedPlans.length) {
+    priceSec.style.display = 'none';
+    tablesCnt.innerHTML    = '';
+    return;
+  }
+  priceSec.style.display = 'block';
+  tablesCnt.innerHTML    = '';
+  const includePromo = promoTog.value === 'yes';
+  const promoVal     = includePromo ? +promoInp.value : 0;
+  const yrs          = +yearsSel.value;
+  const gr           = +growthInp.value / 100;
+  selectedPlans.forEach(i => {
+    const slot = slotsCnt.children[i];
+    const p    = slot.querySelector('[id^=platform]').value;
+    const t    = slot.querySelector('[id^=tier]').value;
+    const r    = +slot.querySelector('input[id^=price]').value;
+    const data = featuresByTier[t];
+    const logo = p === 'Protégé' ? 'Protege.png' : data.logo;
+    let rows = '';
+    if (includePromo) rows += `<tr><td>Promotional Period</td><td>$${promoVal.toFixed(2)}</td></tr>`;
+    for (let y = 1; y <= yrs; y++) {
+      const rate = y === 1 ? r : r * Math.pow(1 + gr, y - 1);
+      rows += `<tr><td>Year ${y}</td><td>$${rate.toFixed(2)}</td></tr>`;
     }
-    const w=document.createElement('div');
-    w.className='pricing-table-wrapper';
-    w.innerHTML=`
+    const w = document.createElement('div');
+    w.className = 'pricing-table-wrapper';
+    w.innerHTML = `
       <h3>${p} – ${t}</h3>
       <img src="${logo}" alt="Logo"/>
       <table>
@@ -249,44 +265,50 @@ function generateTables(){
   });
 }
 
-function showModal(list){
-  featureUl.innerHTML=''; list.forEach(f=>{
-    const li=document.createElement('li');
-    li.textContent=f; featureUl.appendChild(li);
+function showModal(list) {
+  featureUl.innerHTML = '';
+  list.forEach(f => {
+    const li = document.createElement('li');
+    li.textContent = f;
+    featureUl.appendChild(li);
   });
-  modal.style.display='flex';
+  modal.style.display = 'flex';
 }
-closeModal.addEventListener('click',()=>modal.style.display='none');
-window.addEventListener('click',e=>{ if(e.target===modal) modal.style.display='none'; });
+closeModal.addEventListener('click', () => modal.style.display = 'none');
+window.addEventListener('click', e => { if (e.target === modal) modal.style.display = 'none'; });
 
-function updateProceed(){
-  proceedBtn.disabled = !(selectedPlans.length>0 && agreeChk.checked);
+function updateProceed() {
+  proceedBtn.disabled = !(selectedPlans.length > 0 && agreeChk.checked);
 }
 
-resetBtn.addEventListener('click',()=>{
-  sgSelect.selectedIndex=0;
-  numSelect.disabled=true; numSelect.selectedIndex=0;
-  slotsCnt.innerHTML=''; cardsCnt.innerHTML='';
+resetBtn.addEventListener('click', () => {
+  sgSelect.selectedIndex  = 0;
+  numSelect.disabled      = true;
+  numSelect.selectedIndex = 0;
+  slotsCnt.innerHTML      = '';
+  cardsCnt.innerHTML      = '';
   resetAll();
 });
+
 agreeChk.addEventListener('change', updateProceed);
 
-proceedBtn.addEventListener('click', async()=>{
+proceedBtn.addEventListener('click', async () => {
   const config = {
     state: sgSelect.value,
-    plans: selectedPlans.map(i=>{
-      const s=slotsCnt.children[i];
+    plans: selectedPlans.map(i => {
+      const s = slotsCnt.children[i];
       return {
         platform: s.querySelector('[id^=platform]').value,
         tier:     s.querySelector('[id^=tier]').value,
         rate:     +s.querySelector('input[id^=price]').value
       };
     }),
-    promo:  promoTog.value==='yes'?+promoInp.value:null,
+    promo:  promoTog.value === 'yes' ? +promoInp.value : null,
     years:  +yearsSel.value,
     growth: +growthInp.value,
-    skus:   skuInput.value.split('\n').filter(x=>x)
+    skus:   skuInput.value.split('\n').filter(x => x)
   };
   const id = await saveQuote(config);
   window.location.href = `quote.html?id=${id}`;
 });
+
